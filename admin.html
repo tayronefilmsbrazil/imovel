@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Landing Page Imóvel</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --dark:#0C1420;--navy:#142030;--sand:#EAE0CA;--gold:#C8A45A;
+      --ocean:#3A7D94;--wpp:#25D366;--white:#FDFAF5;
+    }
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#222;font-size:15px}
+    #admin-body{display:none}
+
+    /* Layout */
+    .admin-header{background:var(--dark);color:#fff;padding:1.25rem 2rem;display:flex;align-items:center;gap:1rem}
+    .admin-header h1{font-size:1.15rem;font-weight:600}
+    .admin-header span{font-size:.8rem;background:rgba(255,255,255,.1);padding:.2rem .6rem;border-radius:50px;color:var(--gold)}
+    .admin-main{max-width:900px;margin:2rem auto;padding:0 1rem 4rem}
+
+    /* Fieldsets */
+    fieldset{background:#fff;border:1px solid #ddd;border-radius:12px;padding:1.5rem 1.75rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    legend{font-weight:700;font-size:.95rem;color:var(--dark);background:#fff;padding:0 .5rem;margin-left:-.25rem}
+    .field-group{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+    .field-group.cols-1{grid-template-columns:1fr}
+    .field-group.cols-3{grid-template-columns:repeat(3,1fr)}
+    label{display:block;font-size:.8rem;font-weight:600;color:#555;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em}
+    input[type=text],input[type=email],input[type=tel],textarea,select{
+      width:100%;padding:.6rem .85rem;border:1.5px solid #ddd;border-radius:8px;
+      font-size:.92rem;font-family:inherit;color:#222;
+      transition:border-color .2s;background:#fafafa;
+    }
+    input:focus,textarea:focus{outline:none;border-color:var(--ocean);background:#fff}
+    textarea{resize:vertical;min-height:80px}
+    input[type=file]{padding:.4rem 0;border:none;background:none;font-size:.88rem}
+
+    /* Seção de diferenciais / números */
+    .repeat-block{border:1px solid #eee;border-radius:8px;padding:1rem;margin-top:1rem}
+    .repeat-block+.repeat-block{margin-top:.75rem}
+    .repeat-label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ocean);margin-bottom:.75rem}
+
+    /* Grid de fotos */
+    .photo-grid-wrap{margin-top:1rem}
+    #lp-photoGrid{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
+      margin-top:.75rem;min-height:80px;
+    }
+    .photo-thumb{position:relative;aspect-ratio:4/3;border-radius:6px;overflow:hidden;background:#eee}
+    .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo-remove{
+      position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;
+      border:none;border-radius:50%;width:20px;height:20px;font-size:12px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;
+    }
+    #lp-photoCounter{font-size:.78rem;color:#888;margin-top:.4rem}
+
+    /* Preview foto hero / vendedor */
+    .img-preview{max-width:160px;border-radius:8px;margin-top:.6rem;display:none;border:2px solid var(--sand)}
+
+    /* Modos de vídeo */
+    .radio-group{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.75rem}
+    .radio-group label{text-transform:none;font-weight:500;font-size:.9rem;color:#333;display:flex;align-items:center;gap:.35rem}
+    .radio-group input[type=radio]{width:auto}
+    .video-section{margin-top:1rem;padding:1rem;background:#f8f8f8;border-radius:8px;border:1px dashed #ccc}
+
+    /* Banners */
+    .admin-banner{display:none;border-radius:8px;padding:.75rem 1rem;font-size:.88rem;margin-top:.75rem}
+    .admin-banner--warn{background:#fff3cd;border:1px solid #ffc107;color:#856404}
+    .admin-banner--ok{background:#d1f2eb;border:1px solid #25D366;color:#0a5c36}
+
+    /* Mapa — linhas de distância */
+    .dist-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;margin-top:.5rem}
+    .dist-row input:last-child{width:90px}
+
+    /* Botões de ação */
+    .action-bar{
+      position:sticky;bottom:0;background:#fff;border-top:1px solid #ddd;
+      padding:1rem 2rem;display:flex;gap:1rem;justify-content:flex-end;
+      box-shadow:0 -4px 16px rgba(0,0,0,.07);z-index:100;
+    }
+    .btn{border:none;border-radius:50px;padding:.75rem 1.75rem;font-weight:600;font-size:.95rem;cursor:pointer;transition:filter .2s,transform .2s}
+    .btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .btn-primary{background:var(--dark);color:#fff}
+    .btn-success{background:var(--wpp);color:#fff}
+    .btn-outline{background:transparent;border:2px solid var(--dark);color:var(--dark)}
+
+    /* Hint */
+    .hint{font-size:.78rem;color:#999;margin-top:.3rem}
+
+    @media(max-width:600px){
+      .field-group.cols-3,.field-group{grid-template-columns:1fr}
+      #lp-photoGrid{grid-template-columns:repeat(3,1fr)}
+      .admin-header{padding:1rem}
+    }
+  </style>
+</head>
+<body>
+
+<div id="admin-body">
+
+  <header class="admin-header">
+    <h1>⚙️ Painel Admin — Landing Page Imóvel</h1>
+    <span>Tayrone Films</span>
+  </header>
+
+  <main class="admin-main">
+
+    <!-- ① DADOS DO IMÓVEL -->
+    <fieldset>
+      <legend>① Dados do Imóvel</legend>
+      <div class="field-group">
+        <div>
+          <label for="lp-propertyName">Título principal</label>
+          <input type="text" id="lp-propertyName" value="Studio beira-mar Tatuamunha" placeholder="Ex: Studio beira-mar Tatuamunha">
+        </div>
+        <div>
+          <label for="lp-condoName">Condomínio / subtítulo</label>
+          <input type="text" id="lp-condoName" value="Essence Tatuamunha" placeholder="Ex: Essence Tatuamunha">
+        </div>
+        <div>
+          <label for="lp-location">Localização</label>
+          <input type="text" id="lp-location" value="Praia de Tatuamunha, Litoral Norte AL" placeholder="Cidade / Praia">
+        </div>
+        <div>
+          <label for="lp-price">Preço</label>
+          <input type="text" id="lp-price" value="R$ 400.000" placeholder="R$ 400.000">
+        </div>
+        <div>
+          <label for="lp-eyebrow">Eyebrow (texto acima do título)</label>
+          <input type="text" id="lp-eyebrow" value="Litoral Norte · Alagoas" placeholder="Litoral Norte · Alagoas">
+        </div>
+        <div>
+          <label for="lp-headline">Headline principal</label>
+          <input type="text" id="lp-headline" value="Studio beira-mar em Alagoas" placeholder="Studio beira-mar em Alagoas">
+        </div>
+        <div>
+          <label for="lp-type">Tipo do imóvel</label>
+          <input type="text" id="lp-type" value="Studio" placeholder="Studio / Apartamento / Casa">
+        </div>
+        <div>
+          <label for="lp-view">Vista</label>
+          <input type="text" id="lp-view" value="Para o mar" placeholder="Para o mar">
+        </div>
+      </div>
+      <div class="field-group cols-1" style="margin-top:.75rem">
+        <div>
+          <label for="lp-urgency">Pílula de urgência</label>
+          <input type="text" id="lp-urgency" value="⚡ Unidade disponível — consulte condições" placeholder="⚡ Unidade disponível — consulte condições">
+        </div>
+        <div>
+          <label for="lp-pageTitle">Título da aba (SEO)</label>
+          <input type="text" id="lp-pageTitle" value="Studio Beira-Mar · Condomínio Essence Tatuamunha · R$ 400.000" placeholder="Título da aba do navegador">
+        </div>
+        <div>
+          <label for="lp-metaDesc">Meta description (SEO)</label>
+          <textarea id="lp-metaDesc" rows="2" placeholder="Descrição para Google...">Studio beira-mar no Condomínio Essence Tatuamunha, Praia de Tatuamunha, Litoral Norte AL. R$ 400.000. Venda direta com o proprietário. Fale agora pelo WhatsApp.</textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ② CHIPS BAR -->
+    <fieldset>
+      <legend>② Chips Bar (características rápidas)</legend>
+      <p class="hint">Inclua emojis no texto. Ex: 🌊 Beira-mar</p>
+      <div class="field-group cols-3" style="margin-top:.75rem">
+        <div><label for="lp-chip1">Chip 1</label><input type="text" id="lp-chip1" value="🌊 Beira-mar"></div>
+        <div><label for="lp-chip2">Chip 2</label><input type="text" id="lp-chip2" value="🏊 Piscina"></div>
+        <div><label for="lp-chip3">Chip 3</label><input type="text" id="lp-chip3" value="🅿️ Estacionamento"></div>
+        <div><label for="lp-chip4">Chip 4</label><input type="text" id="lp-chip4" value="🐾 Pet Friendly"></div>
+        <div><label for="lp-chip5">Chip 5</label><input type="text" id="lp-chip5" value="🌅 Vista Mar"></div>
+        <div><label for="lp-chip6">Chip 6</label><input type="text" id="lp-chip6" value="📋 Documentação em dia"></div>
+      </div>
+    </fieldset>
+
+    <!-- ③ DIFERENCIAIS -->
+    <fieldset>
+      <legend>③ Diferenciais (3 blocos)</legend>
+      <div class="repeat-block">
+        <div class="repeat-label">Diferencial 1</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-feat1icon">Emoji / Ícone</label><input type="text" id="lp-feat1icon" value="🌊"></div>
+          <div style="grid-column:span 2"><label for="lp-feat1title">Título</label><input type="text" id="lp-feat1title" value="Localização privilegiada beira-mar"></div>
+        </div>
+        <div style="margin-top:.6rem"><label for="lp-feat1desc">Descrição</label><textarea id="lp-feat1desc">Praia de Tatuamunha fica no Litoral Norte de Alagoas, um dos destinos mais valorizados do Nordeste — protegida por recifes, com águas cristalinas e alta procura o ano inteiro.</textarea></div>
+      </div>
+      <div class="repeat-block">
+        <div class="repeat-label">Diferencial 2</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-feat2icon">Emoji / Ícone</label><input type="text" id="lp-feat2icon" value="💰"></div>
+          <div style="grid-column:span 2"><label for="lp-feat2title">Título</label><input type="text" id="lp-feat2title" value="Renda passiva com aluguel de temporada"></div>
+        </div>
+        <div style="margin-top:.6rem"><label for="lp-feat2desc">Descrição</label><textarea id="lp-feat2desc">Alta ocupação via Airbnb e Booking durante todo o ano. Potencial de R$ 4.000 a R$ 6.000 mensais com gestão de curta temporada.</textarea></div>
+      </div>
+      <div class="repeat-block">
+        <div class="repeat-label">Diferencial 3</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-feat3icon">Emoji / Ícone</label><input type="text" id="lp-feat3icon" value="📈"></div>
+          <div style="grid-column:span 2"><label for="lp-feat3title">Título</label><input type="text" id="lp-feat3title" value="Valorização comprovada de dois dígitos"></div>
+        </div>
+        <div style="margin-top:.6rem"><label for="lp-feat3desc">Descrição</label><textarea id="lp-feat3desc">O metro quadrado em Maceió valorizou 10,5% em 2025 e o Litoral Norte lidera a tendência.</textarea></div>
+      </div>
+    </fieldset>
+
+    <!-- ④ NÚMEROS DO INVESTIMENTO -->
+    <fieldset>
+      <legend>④ Números do Investimento (3 cards)</legend>
+      <div class="repeat-block">
+        <div class="repeat-label">Card 1</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-num1label">Label</label><input type="text" id="lp-num1label" value="Valor do imóvel"></div>
+          <div><label for="lp-num1value">Valor destacado</label><input type="text" id="lp-num1value" value="R$ 400 mil"></div>
+          <div><label for="lp-num1note">Nota</label><input type="text" id="lp-num1note" value="Studio completo, pronto para uso"></div>
+        </div>
+      </div>
+      <div class="repeat-block">
+        <div class="repeat-label">Card 2</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-num2label">Label</label><input type="text" id="lp-num2label" value="Diária estimada"></div>
+          <div><label for="lp-num2value">Valor destacado</label><input type="text" id="lp-num2value" value="R$ 350 – 600"></div>
+          <div><label for="lp-num2note">Nota</label><input type="text" id="lp-num2note" value="Alta temporada, 70–80% de ocupação"></div>
+        </div>
+      </div>
+      <div class="repeat-block">
+        <div class="repeat-label">Card 3</div>
+        <div class="field-group cols-3">
+          <div><label for="lp-num3label">Label</label><input type="text" id="lp-num3label" value="Renda mensal estimada"></div>
+          <div><label for="lp-num3value">Valor destacado</label><input type="text" id="lp-num3value" value="R$ 4 – 6 mil"></div>
+          <div><label for="lp-num3note">Nota</label><input type="text" id="lp-num3note" value="Gestão via Airbnb, Booking e aluguel local"></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ⑤ MAPA -->
+    <fieldset>
+      <legend>⑤ Mapa e Distâncias</legend>
+      <div class="field-group cols-1">
+        <div>
+          <label for="lp-mapTitle">Título da seção de mapa</label>
+          <input type="text" id="lp-mapTitle" value="Praia de Tatuamunha, Porto de Pedras — AL">
+        </div>
+        <div>
+          <label for="lp-mapEmbedUrl">URL do embed do Google Maps</label>
+          <textarea id="lp-mapEmbedUrl" rows="2" placeholder="Cole aqui o src do iframe do Google Maps..."></textarea>
+          <p class="hint">No Google Maps: Compartilhar → Incorporar mapa → copie apenas o valor do atributo src=""</p>
+        </div>
+      </div>
+      <p style="margin-top:1.25rem;font-weight:600;font-size:.85rem;color:#555">Distâncias (deixe vazio para omitir)</p>
+      <div class="dist-row"><input type="text" id="lp-dist1p" value="Maceió (capital)" placeholder="Nome do lugar"><input type="text" id="lp-dist1k" value="90 km" placeholder="Distância"></div>
+      <div class="dist-row"><input type="text" id="lp-dist2p" value="Aeroporto Zumbi dos Palmares" placeholder="Nome do lugar"><input type="text" id="lp-dist2k" value="80 km" placeholder="Distância"></div>
+      <div class="dist-row"><input type="text" id="lp-dist3p" value="Rota Ecológica dos Milagres" placeholder="Nome do lugar"><input type="text" id="lp-dist3k" value="15 km" placeholder="Distância"></div>
+      <div class="dist-row"><input type="text" id="lp-dist4p" value="São Miguel dos Milagres" placeholder="Nome do lugar"><input type="text" id="lp-dist4k" value="18 km" placeholder="Distância"></div>
+      <div class="dist-row"><input type="text" id="lp-dist5p" value="Praias de recife de corais" placeholder="Nome do lugar"><input type="text" id="lp-dist5k" value="À beira-mar" placeholder="Distância"></div>
+      <div class="dist-row"><input type="text" id="lp-dist6p" placeholder="Nome do lugar"><input type="text" id="lp-dist6k" placeholder="Distância"></div>
+    </fieldset>
+
+    <!-- ⑥ GALERIA E VÍDEO -->
+    <fieldset>
+      <legend>⑥ Galeria de Fotos e Vídeo</legend>
+
+      <!-- Foto hero -->
+      <div style="margin-bottom:1.5rem">
+        <label for="lp-heroPhotoInput">Foto de destaque (hero — ocupa tela cheia)</label>
+        <input type="file" id="lp-heroPhotoInput" accept="image/*">
+        <p class="hint">Recomendado: foto horizontal, mínimo 1600×900px. Se não enviar, será usado um gradiente.</p>
+        <img id="lp-heroPrev" class="img-preview" src="" alt="Preview hero">
+      </div>
+
+      <!-- Galeria -->
+      <div class="photo-grid-wrap">
+        <label for="lp-photoInput">Fotos da galeria (até 10)</label>
+        <input type="file" id="lp-photoInput" accept="image/*" multiple>
+        <p class="hint">Selecione múltiplas fotos de uma vez. A primeira foto será o poster do vídeo.</p>
+        <div id="lp-photoGrid"></div>
+        <span id="lp-photoCounter" style="font-size:.78rem;color:#888">0/10 fotos</span>
+      </div>
+
+      <!-- Vídeo -->
+      <div style="margin-top:1.75rem">
+        <p style="font-weight:700;font-size:.88rem;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem">Vídeo</p>
+        <div class="radio-group">
+          <label><input type="radio" name="lp-videoMode" value="none" checked> Sem vídeo</label>
+          <label><input type="radio" name="lp-videoMode" value="upload"> Upload de arquivo (MP4/MOV)</label>
+          <label><input type="radio" name="lp-videoMode" value="youtube"> Link do YouTube</label>
+          <label><input type="radio" name="lp-videoMode" value="instagram"> Link do Instagram</label>
+        </div>
+
+        <div id="video-section-upload" class="video-section" style="display:none">
+          <label for="lp-videoFile">Arquivo de vídeo (MP4, MOV, WEBM)</label>
+          <input type="file" id="lp-videoFile" accept="video/mp4,video/mov,video/quicktime,video/webm">
+          <p class="hint">Recomendado: máximo 50 MB. Vídeos maiores ficam muito pesados. Use YouTube para vídeos grandes.</p>
+          <div id="lp-videoBanner" class="admin-banner admin-banner--warn"></div>
+        </div>
+
+        <div id="video-section-youtube" class="video-section" style="display:none">
+          <label for="lp-videoYouTube">URL ou ID do vídeo no YouTube</label>
+          <input type="text" id="lp-videoYouTube" placeholder="https://www.youtube.com/watch?v=... ou youtu.be/...">
+          <p class="hint">Aceita: youtube.com/watch?v=, youtu.be/, /shorts/, ou o ID puro (11 caracteres)</p>
+        </div>
+
+        <div id="video-section-instagram" class="video-section" style="display:none">
+          <label for="lp-videoInsta">URL do post ou reel no Instagram</label>
+          <input type="text" id="lp-videoInsta" placeholder="https://www.instagram.com/reel/...">
+          <p class="hint">Use o link completo de um post ou reel público.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ⑦ CREDIBILIDADE -->
+    <fieldset>
+      <legend>⑦ Seção de Credibilidade (quem vende)</legend>
+      <div class="field-group">
+        <div>
+          <label for="lp-sellerName">Nome do vendedor</label>
+          <input type="text" id="lp-sellerName" value="Tayrone">
+        </div>
+        <div>
+          <label for="lp-sellerTitle">Cargo / descrição</label>
+          <input type="text" id="lp-sellerTitle" value="Proprietário · Tayrone Films">
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <label for="lp-sellerPhotoInput">Foto do vendedor</label>
+        <input type="file" id="lp-sellerPhotoInput" accept="image/*">
+        <p class="hint">Se não enviar foto, será exibido um avatar com as iniciais do nome.</p>
+        <img id="lp-sellerPhotoPreview" class="img-preview" src="" alt="Preview foto vendedor">
+      </div>
+      <div class="field-group cols-1" style="margin-top:1rem">
+        <div>
+          <label for="lp-sellerBio">Texto (parágrafo 1)</label>
+          <textarea id="lp-sellerBio" rows="3">Sou proprietário deste studio no Condomínio Essence Tatuamunha e estou vendendo diretamente — sem intermediários. Isso garante transparência total, resposta rápida e condições reais de quem conhece o imóvel por dentro.</textarea>
+        </div>
+        <div>
+          <label for="lp-sellerBio2">Texto (parágrafo 2, opcional)</label>
+          <textarea id="lp-sellerBio2" rows="3">Tenho toda a documentação em dia e posso enviar fotos adicionais, vídeo completo e organizar visita presencial conforme sua disponibilidade.</textarea>
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <p style="font-weight:600;font-size:.82rem;color:#555;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.04em">Badges de confiança (até 5)</p>
+        <div class="field-group cols-3">
+          <div><input type="text" id="lp-badge1" value="✅ Documentação em dia" placeholder="Badge 1"></div>
+          <div><input type="text" id="lp-badge2" value="📋 Escritura registrada" placeholder="Badge 2"></div>
+          <div><input type="text" id="lp-badge3" value="🏦 Aceita financiamento" placeholder="Badge 3"></div>
+          <div><input type="text" id="lp-badge4" value="🤝 Negociação direta" placeholder="Badge 4"></div>
+          <div><input type="text" id="lp-badge5" placeholder="Badge 5 (opcional)"></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- ⑧ CONTATO E RASTREAMENTO -->
+    <fieldset>
+      <legend>⑧ Contato e Rastreamento</legend>
+      <div class="field-group">
+        <div>
+          <label for="lp-whatsappNumber">WhatsApp (somente números, com DDD e código do país)</label>
+          <input type="tel" id="lp-whatsappNumber" value="5582999723040" placeholder="5582999999999">
+          <p class="hint">Não use espaços, traços ou parênteses. Ex: 5582999723040</p>
+        </div>
+        <div>
+          <label for="lp-email">E-mail de contato</label>
+          <input type="email" id="lp-email" value="contato@tayronefilms.com.br">
+        </div>
+      </div>
+
+      <p style="margin-top:1.5rem;font-weight:700;font-size:.85rem;color:#555;text-transform:uppercase;letter-spacing:.04em">Mensagens pré-preenchidas (WhatsApp)</p>
+      <p class="hint" style="margin-top:.25rem">Cada botão da página envia uma mensagem diferente. Personalize conforme o contexto.</p>
+
+      <div class="field-group cols-1" style="margin-top:.75rem">
+        <div>
+          <label for="lp-wppHero">Botão Hero (topo da página)</label>
+          <textarea id="lp-wppHero" rows="2">Olá! Vi o studio beira-mar no Condomínio Essence Tatuamunha e tenho interesse. Pode me enviar mais informações?</textarea>
+        </div>
+        <div>
+          <label for="lp-wppGallery">Botão Galeria</label>
+          <textarea id="lp-wppGallery" rows="2">Olá! Gostaria de solicitar mais fotos do studio em Tatuamunha.</textarea>
+        </div>
+        <div>
+          <label for="lp-wppFloat">Botão Flutuante (desktop)</label>
+          <textarea id="lp-wppFloat" rows="2">Olá! Tenho interesse no studio beira-mar em Tatuamunha. Pode me ajudar?</textarea>
+        </div>
+        <div>
+          <label for="lp-wppSticky">Barra Sticky (mobile)</label>
+          <textarea id="lp-wppSticky" rows="2">Olá! Vi o imóvel por R$ 400.000 e quero saber mais detalhes.</textarea>
+        </div>
+        <div>
+          <label for="lp-wppFinalCta">Botão CTA Final</label>
+          <textarea id="lp-wppFinalCta" rows="2">Olá! Quero agendar uma visita ao studio no Condomínio Essence Tatuamunha.</textarea>
+        </div>
+      </div>
+
+      <p style="margin-top:1.5rem;font-weight:700;font-size:.85rem;color:#555;text-transform:uppercase;letter-spacing:.04em">Rastreamento (opcional)</p>
+      <p class="hint" style="margin-top:.25rem">Deixe em branco para desativar. O código só é injetado se o ID estiver preenchido.</p>
+      <div class="field-group" style="margin-top:.75rem">
+        <div>
+          <label for="lp-metaPixelId">Meta Pixel ID</label>
+          <input type="text" id="lp-metaPixelId" placeholder="Ex: 1234567890123456">
+        </div>
+        <div>
+          <label for="lp-ga4Id">Google Analytics 4 ID</label>
+          <input type="text" id="lp-ga4Id" placeholder="Ex: G-XXXXXXXXXX">
+        </div>
+      </div>
+    </fieldset>
+
+  </main>
+
+  <!-- Barra de ação fixa -->
+  <div class="action-bar">
+    <button id="btn-preview" class="btn btn-outline" type="button">👁️ Pré-visualizar</button>
+    <button id="btn-download" class="btn btn-success" type="button">⬇️ Baixar HTML (index.html)</button>
+  </div>
+
+</div><!-- /#admin-body -->
+
+<script src="template.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
