@@ -542,11 +542,25 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
 </section>`;
   }
 
+  function isValidMapEmbed(url) {
+    // Aceita apenas URLs de embed do Google Maps (previne iframes com URLs erradas)
+    return url && (
+      url.indexOf('google.com/maps/embed') !== -1 ||
+      url.indexOf('maps.google.com') !== -1
+    );
+  }
+
   function mapBlock(d) {
     var mapContent = '';
-    if (d.mapEmbedUrl) {
+    if (d.mapEmbedUrl && isValidMapEmbed(d.mapEmbedUrl)) {
       mapContent = `<div class="map-iframe-wrap">
       <iframe src="${e(d.mapEmbedUrl)}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="Localização do imóvel"></iframe>
+    </div>`;
+    } else if (d.mapEmbedUrl) {
+      // URL fornecida mas não é um embed válido do Google Maps
+      mapContent = `<div class="map-placeholder" style="flex-direction:column;gap:.5rem">
+      <span>⚠️ URL do mapa inválida.</span>
+      <small style="font-size:.8rem;text-align:center">No Google Maps: Compartilhar → Incorporar mapa → copie o valor do atributo <strong>src=""</strong></small>
     </div>`;
     } else {
       mapContent = `<div class="map-placeholder">📍 ${d.mapTitle ? e(d.mapTitle) : 'Localização disponível sob consulta'}</div>`;
@@ -657,6 +671,27 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
      FUNÇÃO PRINCIPAL
   ───────────────────────────────────────────── */
 
+  function dataEmbed(d) {
+    // Embute campos de texto como JSON para permitir reimportação no admin.
+    // Fotos e vídeos NÃO são duplicados aqui — o admin os extrai do HTML gerado.
+    var payload = {
+      propertyName: d.propertyName, condoName: d.condoName,
+      location: d.location, price: d.price, eyebrow: d.eyebrow,
+      headline: d.headline, type: d.type, view: d.view, urgency: d.urgency,
+      pageTitle: d.pageTitle, metaDescription: d.metaDescription,
+      chips: d.chips, features: d.features, numbers: d.numbers,
+      mapEmbedUrl: d.mapEmbedUrl, mapTitle: d.mapTitle, distances: d.distances,
+      sellerName: d.sellerName, sellerTitle: d.sellerTitle,
+      sellerBio: d.sellerBio, sellerBio2: d.sellerBio2, badges: d.badges,
+      whatsappNumber: d.whatsappNumber, email: d.email,
+      wppHero: d.wppHero, wppGallery: d.wppGallery, wppFloat: d.wppFloat,
+      wppSticky: d.wppSticky, wppFinalCta: d.wppFinalCta,
+      metaPixelId: d.metaPixelId, ga4Id: d.ga4Id,
+      videoMode: d.videoMode, youtubeUrl: d.youtubeUrl, instagramUrl: d.instagramUrl,
+    };
+    return `<script type="application/json" id="lp-data">${JSON.stringify(payload)}<\/script>`;
+  }
+
   function generateLandingPage(data) {
     var d = mergeDefaults(data || {});
 
@@ -689,6 +724,7 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
   ${floatingWpp(d)}
   ${stickyBar(d)}
   ${lightboxMarkup()}
+  ${dataEmbed(d)}
   ${buildJS(d)}
 </body>
 </html>`;

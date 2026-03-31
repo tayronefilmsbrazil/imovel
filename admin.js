@@ -150,7 +150,7 @@
     });
     // contador
     var counter = document.getElementById('lp-photoCounter');
-    if (counter) counter.textContent = photoBase64Array.length + '/10 fotos';
+    if (counter) counter.textContent = photoBase64Array.length + '/15 fotos';
   }
 
   function initPhotoGrid() {
@@ -158,9 +158,9 @@
     if (!input) return;
     input.addEventListener('change', function () {
       var files = Array.from(input.files);
-      var slots = 10 - photoBase64Array.length;
+      var slots = 15 - photoBase64Array.length;
       if (files.length > slots) {
-        alert('Máximo de 10 fotos. Apenas as primeiras ' + slots + ' serão adicionadas.');
+        alert('Máximo de 15 fotos. Apenas as primeiras ' + slots + ' serão adicionadas.');
         files = files.slice(0, slots);
       }
       Promise.all(files.map(fileToBase64)).then(function (results) {
@@ -336,6 +336,146 @@
   }
 
   /* ─────────────────────────────────────────────
+     IMPORTAR HTML EXISTENTE
+  ───────────────────────────────────────────── */
+
+  function populateFields(data) {
+    // Campos de texto simples
+    var simple = {
+      propertyName: F.propertyName, condoName: F.condoName,
+      location: F.location, price: F.price, eyebrow: F.eyebrow,
+      headline: F.headline, type: F.type, view: F.view, urgency: F.urgency,
+      pageTitle: F.pageTitle, metaDescription: F.metaDesc,
+      mapEmbedUrl: F.mapEmbedUrl, mapTitle: F.mapTitle,
+      sellerName: F.sellerName, sellerTitle: F.sellerTitle,
+      sellerBio: F.sellerBio, sellerBio2: F.sellerBio2,
+      whatsappNumber: F.whatsappNumber, email: F.email,
+      wppHero: F.wppHero, wppGallery: F.wppGallery, wppFloat: F.wppFloat,
+      wppSticky: F.wppSticky, wppFinalCta: F.wppFinalCta,
+      metaPixelId: F.metaPixelId, ga4Id: F.ga4Id,
+      youtubeUrl: F.videoYouTube, instagramUrl: F.videoInsta,
+    };
+    for (var key in simple) {
+      if (data[key] !== undefined) {
+        var el = document.getElementById(simple[key]);
+        if (el) el.value = data[key] || '';
+      }
+    }
+    // Chips
+    F.chips.forEach(function(id, i) {
+      var el = document.getElementById(id);
+      if (el) el.value = (data.chips && data.chips[i]) ? data.chips[i] : '';
+    });
+    // Diferenciais
+    [0,1,2].forEach(function(i) {
+      var feat = (data.features && data.features[i]) || {};
+      var iconEl = document.getElementById(F.featIcon[i]);
+      var titleEl = document.getElementById(F.featTitle[i]);
+      var descEl = document.getElementById(F.featDesc[i]);
+      if (iconEl) iconEl.value = feat.icon || '';
+      if (titleEl) titleEl.value = feat.title || '';
+      if (descEl) descEl.value = feat.desc || '';
+    });
+    // Números
+    [0,1,2].forEach(function(i) {
+      var num = (data.numbers && data.numbers[i]) || {};
+      var lEl = document.getElementById(F.numLabel[i]);
+      var vEl = document.getElementById(F.numValue[i]);
+      var nEl = document.getElementById(F.numNote[i]);
+      if (lEl) lEl.value = num.label || '';
+      if (vEl) vEl.value = num.value || '';
+      if (nEl) nEl.value = num.note || '';
+    });
+    // Distâncias
+    [0,1,2,3,4,5].forEach(function(i) {
+      var dist = (data.distances && data.distances[i]) || {};
+      var pEl = document.getElementById(F.distPlace[i]);
+      var kEl = document.getElementById(F.distKm[i]);
+      if (pEl) pEl.value = dist.place || '';
+      if (kEl) kEl.value = dist.distance || '';
+    });
+    // Badges
+    F.badges.forEach(function(id, i) {
+      var el = document.getElementById(id);
+      if (el) el.value = (data.badges && data.badges[i]) ? data.badges[i] : '';
+    });
+  }
+
+  function importFromHtml(file) {
+    file.text().then(function(html) {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(html, 'text/html');
+
+      // Lê o bloco de dados embutido
+      var dataEl = doc.getElementById('lp-data');
+      if (!dataEl) {
+        alert('⚠️ Este arquivo não foi gerado pelo painel admin (versão atual).\n\nGere um novo index.html pelo admin para habilitar a importação.');
+        return;
+      }
+      var data;
+      try { data = JSON.parse(dataEl.textContent); }
+      catch(err) { alert('Erro ao ler os dados do arquivo. Pode estar corrompido.'); return; }
+
+      // Popula campos de texto
+      populateFields(data);
+
+      // Extrai foto hero do background-image inline
+      var heroEl = doc.getElementById('hero');
+      if (heroEl) {
+        var bg = heroEl.getAttribute('style') || '';
+        var m = bg.match(/url\(["']?(data:[^"')]+)["']?\)/);
+        if (m) {
+          heroPhotoBase64 = m[1];
+          var heroPrev = document.getElementById('lp-heroPrev');
+          if (heroPrev) { heroPrev.src = heroPhotoBase64; heroPrev.style.display = 'block'; }
+        }
+      }
+
+      // Extrai fotos da galeria
+      var thumbImgs = doc.querySelectorAll('.gallery-thumb img');
+      photoBase64Array = Array.from(thumbImgs).map(function(img) { return img.getAttribute('src'); });
+      renderPhotoGrid();
+
+      // Extrai foto do vendedor
+      var sellerImg = doc.querySelector('.seller-avatar');
+      if (sellerImg) {
+        sellerPhotoBase64 = sellerImg.getAttribute('src');
+        var sellerPrev = document.getElementById(F.sellerPhotoPreview);
+        if (sellerPrev) { sellerPrev.src = sellerPhotoBase64; sellerPrev.style.display = 'block'; }
+      }
+
+      // Restaura modo de vídeo
+      var videoMode = data.videoMode || 'none';
+      var radioEl = document.querySelector('[name="' + F.videoMode + '"][value="' + videoMode + '"]');
+      if (radioEl) { radioEl.checked = true; radioEl.dispatchEvent(new Event('change')); }
+
+      if (videoMode === 'upload') {
+        var videoEl = doc.getElementById('lp-video');
+        if (videoEl) {
+          videoBase64Cache = videoEl.getAttribute('src');
+          videoMimeCache = videoEl.getAttribute('type') || 'video/mp4';
+          showBanner(F.videoBanner, '✅ Vídeo restaurado. Clique em Pré-visualizar para confirmar.', 'ok');
+        }
+      }
+
+      // Scroll até o topo do form
+      document.getElementById('admin-body').scrollIntoView({ behavior: 'smooth' });
+      alert('✅ Importado com sucesso! Confira os campos e clique em Pré-visualizar.');
+    }).catch(function() {
+      alert('Erro ao ler o arquivo. Tente novamente.');
+    });
+  }
+
+  function initImport() {
+    var input = document.getElementById('lp-importFile');
+    if (!input) return;
+    input.addEventListener('change', function() {
+      if (input.files[0]) importFromHtml(input.files[0]);
+      input.value = '';
+    });
+  }
+
+  /* ─────────────────────────────────────────────
      GERAÇÃO DO HTML
   ───────────────────────────────────────────── */
 
@@ -402,6 +542,8 @@
     initPhotoGrid();
     initVideoMode();
     initSellerPhoto();
+
+    initImport();
 
     var btnPreview = document.getElementById('btn-preview');
     var btnDownload = document.getElementById('btn-download');

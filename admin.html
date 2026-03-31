@@ -106,6 +106,18 @@
 
   <main class="admin-main">
 
+    <!-- IMPORTAR HTML EXISTENTE -->
+    <div style="background:#fff;border:2px dashed var(--ocean);border-radius:12px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div style="flex:1;min-width:200px">
+        <p style="font-weight:700;font-size:.95rem;color:var(--dark);margin-bottom:.2rem">📂 Continuar editando uma versão anterior</p>
+        <p style="font-size:.8rem;color:#666">Carrega todos os campos, fotos e configurações de um <code>index.html</code> gerado por este painel.</p>
+      </div>
+      <label style="cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;background:var(--dark);color:#fff;border-radius:50px;padding:.65rem 1.4rem;font-weight:600;font-size:.88rem;white-space:nowrap">
+        📥 Carregar index.html
+        <input type="file" id="lp-importFile" accept=".html" style="display:none">
+      </label>
+    </div>
+
     <!-- ① DADOS DO IMÓVEL -->
     <fieldset>
       <legend>① Dados do Imóvel</legend>
@@ -268,7 +280,7 @@
 
       <!-- Galeria -->
       <div class="photo-grid-wrap">
-        <label for="lp-photoInput">Fotos da galeria (até 10)</label>
+        <label for="lp-photoInput">Fotos da galeria (até 15)</label>
         <input type="file" id="lp-photoInput" accept="image/*" multiple>
         <p class="hint">Selecione múltiplas fotos de uma vez. A primeira foto será o poster do vídeo.</p>
         <div id="lp-photoGrid"></div>
