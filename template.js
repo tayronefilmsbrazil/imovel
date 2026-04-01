@@ -113,7 +113,7 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${e(d.metaPixelId)}&ev=PageView&noscript=1"/></noscript>`;
     }
     if (d.ga4Id || d.gadsId) {
-      var gtagMainId = d.ga4Id || d.gadsId;
+      var gtagMainId = d.gadsId || d.ga4Id;
       out += `
 <!-- Google Analytics 4${d.gadsId ? ' + Google Ads' : ''} -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${e(gtagMainId)}"></script>
