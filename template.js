@@ -48,6 +48,7 @@
     email: '',
     metaPixelId: '',
     ga4Id: '',
+    gadsId: '',
     pageTitle: 'Imóvel à Venda',
     metaDescription: '',
   };
@@ -111,15 +112,17 @@ fbq('track', 'PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${e(d.metaPixelId)}&ev=PageView&noscript=1"/></noscript>`;
     }
-    if (d.ga4Id) {
+    if (d.ga4Id || d.gadsId) {
+      var gtagMainId = d.ga4Id || d.gadsId;
       out += `
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=${e(d.ga4Id)}"></script>
+<!-- Google Analytics 4${d.gadsId ? ' + Google Ads' : ''} -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${e(gtagMainId)}"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${e(d.ga4Id)}');
+${d.ga4Id ? `gtag('config', '${e(d.ga4Id)}');` : ''}
+${d.gadsId ? `gtag('config', '${e(d.gadsId)}');` : ''}
 </script>`;
     }
     return out;
@@ -686,7 +689,7 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
       whatsappNumber: d.whatsappNumber, email: d.email,
       wppHero: d.wppHero, wppGallery: d.wppGallery, wppFloat: d.wppFloat,
       wppSticky: d.wppSticky, wppFinalCta: d.wppFinalCta,
-      metaPixelId: d.metaPixelId, ga4Id: d.ga4Id,
+      metaPixelId: d.metaPixelId, ga4Id: d.ga4Id, gadsId: d.gadsId,
       videoMode: d.videoMode, youtubeUrl: d.youtubeUrl, instagramUrl: d.instagramUrl,
     };
     return `<script type="application/json" id="lp-data">${JSON.stringify(payload)}<\/script>`;
