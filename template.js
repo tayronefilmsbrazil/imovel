@@ -69,7 +69,8 @@
 
   function encodeWpp(number, message) {
     if (!number) return '#';
-    return 'https://wa.me/' + number + '?text=' + encodeURIComponent(message);
+    var clean = number.replace(/[\s\-\(\)\.+]/g, '');
+    return 'https://wa.me/' + clean + '?text=' + encodeURIComponent(message);
   }
 
   function youtubeEmbedUrl(raw) {
