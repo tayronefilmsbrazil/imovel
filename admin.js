@@ -69,6 +69,7 @@
     metaPixelId:   'lp-metaPixelId',
     ga4Id:         'lp-ga4Id',
     gadsId:        'lp-gadsId',
+    gadsConvLabel: 'lp-gadsConvLabel',
   };
 
   /* ─────────────────────────────────────────────
@@ -334,6 +335,7 @@
       metaPixelId:   val(F.metaPixelId),
       ga4Id:         val(F.ga4Id),
       gadsId:        val(F.gadsId),
+      gadsConvLabel: val(F.gadsConvLabel),
     };
   }
 
@@ -354,7 +356,7 @@
       whatsappNumber: F.whatsappNumber, email: F.email,
       wppHero: F.wppHero, wppGallery: F.wppGallery, wppFloat: F.wppFloat,
       wppSticky: F.wppSticky, wppFinalCta: F.wppFinalCta,
-      metaPixelId: F.metaPixelId, ga4Id: F.ga4Id, gadsId: F.gadsId,
+      metaPixelId: F.metaPixelId, ga4Id: F.ga4Id, gadsId: F.gadsId, gadsConvLabel: F.gadsConvLabel,
       youtubeUrl: F.videoYouTube, instagramUrl: F.videoInsta,
     };
     for (var key in simple) {

@@ -49,6 +49,7 @@
     metaPixelId: '',
     ga4Id: '',
     gadsId: '',
+    gadsConvLabel: '',
     pageTitle: 'Imóvel à Venda',
     metaDescription: '',
   };
@@ -402,6 +403,7 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
     var src = el.getAttribute('data-wpp-source');
     if(typeof fbq==='function') fbq('track','Lead',{content_name:src});
     if(typeof gtag==='function') gtag('event','whatsapp_click',{source:src});
+    ${d.gadsId && d.gadsConvLabel ? `if(typeof gtag==='function') gtag('event','conversion',{'send_to':'${e(d.gadsId)}/${e(d.gadsConvLabel)}','event_callback':function(){}});` : ''}
   });
 });
 
@@ -689,7 +691,7 @@ document.querySelectorAll('[data-wpp-source]').forEach(function(el){
       whatsappNumber: d.whatsappNumber, email: d.email,
       wppHero: d.wppHero, wppGallery: d.wppGallery, wppFloat: d.wppFloat,
       wppSticky: d.wppSticky, wppFinalCta: d.wppFinalCta,
-      metaPixelId: d.metaPixelId, ga4Id: d.ga4Id, gadsId: d.gadsId,
+      metaPixelId: d.metaPixelId, ga4Id: d.ga4Id, gadsId: d.gadsId, gadsConvLabel: d.gadsConvLabel,
       videoMode: d.videoMode, youtubeUrl: d.youtubeUrl, instagramUrl: d.instagramUrl,
     };
     return `<script type="application/json" id="lp-data">${JSON.stringify(payload)}<\/script>`;
