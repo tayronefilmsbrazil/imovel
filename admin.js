@@ -75,7 +75,7 @@
   /* ─────────────────────────────────────────────
      ESTADO INTERNO (fonte única de verdade)
   ───────────────────────────────────────────── */
-  var photoBase64Array = [];   // até 10 fotos (base64 data URIs)
+  var photoBase64Array = [];   // até 20 fotos (base64 data URIs)
   var heroPhotoBase64 = null;  // foto de destaque separada
   var videoBase64Cache = null; // base64 do vídeo (modo upload)
   var videoMimeCache = 'video/mp4';
@@ -152,7 +152,7 @@
     });
     // contador
     var counter = document.getElementById('lp-photoCounter');
-    if (counter) counter.textContent = photoBase64Array.length + '/15 fotos';
+    if (counter) counter.textContent = photoBase64Array.length + '/20 fotos';
   }
 
   function initPhotoGrid() {
@@ -160,9 +160,9 @@
     if (!input) return;
     input.addEventListener('change', function () {
       var files = Array.from(input.files);
-      var slots = 15 - photoBase64Array.length;
+      var slots = 20 - photoBase64Array.length;
       if (files.length > slots) {
-        alert('Máximo de 15 fotos. Apenas as primeiras ' + slots + ' serão adicionadas.');
+        alert('Máximo de 20 fotos. Apenas as primeiras ' + slots + ' serão adicionadas.');
         files = files.slice(0, slots);
       }
       Promise.all(files.map(fileToBase64)).then(function (results) {

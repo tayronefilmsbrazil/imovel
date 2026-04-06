@@ -1,0 +1,80 @@
+// Runs via: osascript -l JavaScript generate-wish.jxa.js
+var app = Application.currentApplication();
+app.includeStandardAdditions = true;
+
+var baseDir = '/Users/tayronefilms/Documents/Clientes/IMOVEIS/';
+var tplSrc = app.read(Path(baseDir + 'template.js'));
+var window = {};
+eval(tplSrc);
+
+var data = {
+  propertyName: 'Apartamento 2 quartos · Wish Residence',
+  condoName: 'Wish Residence',
+  location: 'Jatiúca, Maceió — AL',
+  price: 'R$ 1.200.000',
+  eyebrow: 'Jatiúca · Maceió · Alagoas',
+  headline: 'Apartamento 2 quartos com vista definitiva para o mar na Jatiúca',
+  type: '2 quartos (1 suíte)',
+  view: 'Varanda gourmet com vista para o mar',
+  urgency: '⚡ Pronto para morar · nunca habitado',
+  pageTitle: 'Wish Residence · Apartamento 2 quartos · Jatiúca · R$ 1.200.000',
+  metaDescription: 'Apartamento de 78,58m² a ~100m da Praia da Jatiúca. 2 quartos (1 suíte), varanda gourmet com vista mar, 1-2 vagas. R$ 1.200.000. Venda direta com o proprietário.',
+  chips: [
+    '🌊 100m da praia',
+    '🏊 Piscina no rooftop',
+    '🌅 Vista mar definitiva',
+    '🅿️ 1 a 2 vagas',
+    '💪 Academia e coworking',
+    '📋 Segurança 24h'
+  ],
+  photos: [],
+  videoMode: 'none',
+  features: [
+    { icon: '🌊', title: 'Localização premium na Jatiúca', desc: '1ª quadra da Praia da Jatiúca, a cerca de 100 metros do mar. Bairro mais valorizado de Maceió, cercado por restaurantes, cafés, academias e supermercados. Maceió Shopping a 5 minutos e Corredor Vera Arruda próximo.' },
+    { icon: '🏢', title: 'Rooftop completo com vista mar', desc: 'Piscina adulto e infantil, deck molhado, espaço gourmet, forno de pizza, academia, coworking, salão de jogos, mega lounge e salão de festas — tudo no rooftop com vista para a Praia da Jatiúca.' },
+    { icon: '✨', title: 'Novo, pronto para morar, nunca habitado', desc: 'Construção V2 Construções. 78,58m² úteis, 2 quartos (1 suíte), varanda gourmet, 1 a 2 vagas. Aceita financiamento bancário. Documentação em dia.' }
+  ],
+  numbers: [
+    { label: 'Valor do imóvel', value: 'R$ 1,2 mi', note: '78,58m² · 2 quartos (1 suíte)' },
+    { label: 'Área útil', value: '78,58 m²', note: 'Varanda gourmet com vista mar' },
+    { label: 'Distância da praia', value: '~100 m', note: '1ª quadra da Jatiúca' }
+  ],
+  mapEmbedUrl: '',
+  mapTitle: 'Av. Hamilton de Barros Soutinho — Jatiúca, Maceió — AL',
+  distances: [
+    { place: 'Praia da Jatiúca', distance: '~100 m' },
+    { place: 'Maceió Shopping', distance: '~5 min' },
+    { place: 'Corredor Vera Arruda', distance: 'próximo' },
+    { place: 'Restaurantes e cafés', distance: 'a pé' },
+    { place: 'Aeroporto Zumbi dos Palmares', distance: '~25 min' }
+  ],
+  sellerName: 'Tayrone Carvalho',
+  sellerTitle: 'Representante da venda',
+  sellerBio: 'Estou representando a venda deste apartamento no Wish Residence, na 1ª quadra da Praia da Jatiúca — o ponto mais valorizado de Maceió. Atendimento direto, sem intermediários, com transparência e agilidade.',
+  sellerBio2: 'Toda a documentação em ordem, aceita financiamento bancário. Posso enviar fotos adicionais, vídeo completo e organizar visita presencial conforme sua disponibilidade.',
+  badges: ['✅ Pronto para morar', '📋 Documentação em dia', '🏦 Aceita financiamento', '🤝 Negociação direta'],
+  whatsappNumber: '5582999723040',
+  email: 'contato@tayronefilms.com.br',
+  wppHero: 'Olá! Tenho interesse no apartamento do Wish Residence (78,58m² — R$ 1.200.000). Pode me enviar mais informações?',
+  wppGallery: 'Olá! Gostaria de mais fotos do apartamento no Wish Residence.',
+  wppFloat: 'Olá! Tenho interesse no Wish Residence na Jatiúca. Pode me ajudar?',
+  wppSticky: 'Olá! Vi o apartamento do Wish Residence por R$ 1.200.000 e quero mais detalhes.',
+  wppFinalCta: 'Olá! Quero agendar uma visita ao Wish Residence.',
+  metaPixelId: '930180429800034',
+  ga4Id: 'G-B6F3TJZKQW',
+  gadsId: 'AW-18057149108',
+  gadsConvLabel: 'vaVCCODsrZQcELT1qKJD'
+};
+
+var html = window.LandingTemplate.generateLandingPage(data);
+
+var outPath = baseDir + 'index.html';
+// Escreve via shell (app.write só aceita dados específicos)
+var tmpPath = baseDir + '.index.tmp';
+var f = app.openForAccess(Path(tmpPath), { writePermission: true });
+app.setEof(f, { to: 0 });
+app.write(html, { to: f });
+app.closeAccess(f);
+app.doShellScript("mv '" + tmpPath + "' '" + outPath + "'");
+
+'OK ' + html.length + ' bytes';
