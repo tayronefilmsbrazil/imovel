@@ -987,6 +987,98 @@
       transition: transform 0.3s ease;
     }
     .float-wpp:hover { transform: scale(1.1); }
+
+    /* ─── BENEFÍCIOS EMOCIONAIS ─── */
+    .beneficios {
+      padding: 90px 8% 70px;
+      text-align: center;
+    }
+    .beneficios-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .beneficio {
+      padding: 28px 18px;
+      border: 1px solid rgba(201,168,76,0.12);
+      background: linear-gradient(180deg, rgba(201,168,76,0.03) 0%, transparent 100%);
+      border-radius: 6px;
+      transition: border-color .3s ease, transform .3s ease;
+    }
+    .beneficio:hover {
+      border-color: rgba(201,168,76,0.35);
+      transform: translateY(-4px);
+    }
+    .beneficio-icon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      color: var(--gold);
+      font-style: italic;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+    .beneficio-text {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+    @media (max-width: 900px) {
+      .beneficios-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .beneficios { padding: 60px 6% 40px; }
+    }
+    @media (max-width: 520px) {
+      .beneficios-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── BLOCO EVOCATIVO + CTA INLINE ─── */
+    .evocativo {
+      padding: 80px 8% 90px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .evocativo-frase {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+    .evocativo-frase em {
+      color: var(--gold);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .evocativo-cta {
+      display: inline-block;
+      margin-top: 36px;
+      padding: 14px 36px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: background .3s ease, color .3s ease;
+    }
+    .evocativo-cta:hover {
+      background: var(--gold);
+      color: var(--dark);
+    }
+    @media (max-width: 700px) {
+      .evocativo-frase { font-size: 1.5rem; }
+      .evocativo { padding: 50px 6% 60px; }
+    }
   </style>
 </head>
 <body>
@@ -1059,6 +1151,32 @@
       <div class="hb-label">Construções</div>
     </div>
   </div>
+
+  <!-- BENEFÍCIOS EMOCIONAIS -->
+  <section class="beneficios">
+    <div class="section-tag">Estilo de Vida</div>
+    <h2 class="section-title">Razões para <em>chamar de seu</em></h2>
+    <div class="beneficios-grid">
+      <div class="beneficio">
+        <div class="beneficio-icon">i.</div>
+        <div class="beneficio-text">Desperte com o som do mar e o sol da manhã invadindo sua varanda — apartamento 100% nascente.</div>
+      </div>
+      <div class="beneficio">
+        <div class="beneficio-icon">ii.</div>
+        <div class="beneficio-text">A 100 metros dos pés na areia da Praia da Jatiúca — endereço único na 1ª quadra.</div>
+      </div>
+      <div class="beneficio">
+        <div class="beneficio-icon">iii.</div>
+        <div class="beneficio-text">Vista definitiva para o mar — super ventilado, iluminado naturalmente, pronto para morar.</div>
+      </div>
+      <div class="beneficio">
+        <div class="beneficio-icon">iv.</div>
+        <div class="beneficio-text">Rooftop com piscina, gourmet e fitness · Segurança 24h · Sustentabilidade V2 Construções.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
 
   <!-- SOBRE O IMÓVEL -->
   <section>
@@ -1135,6 +1253,16 @@
     <button class="lb-btn lb-next" id="lb-next" aria-label="Próxima">›</button>
     <div class="lb-counter" id="lb-counter"></div>
   </div>
+
+  <!-- BLOCO EVOCATIVO -->
+  <section class="evocativo">
+    <p class="evocativo-frase">
+      Imagine despertar com o som do mar. O sol cruzando a varanda. A vida que você sempre quis — <em>a cem metros da praia</em>.
+    </p>
+    <a href="https://wa.me/5582999723040?text=Olá!%20Gostaria%20de%20agendar%20uma%20visita%20ao%20Wish%20Residence." class="evocativo-cta" target="_blank" rel="noopener">
+      Agendar Visita Exclusiva
+    </a>
+  </section>
 
   <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
 
