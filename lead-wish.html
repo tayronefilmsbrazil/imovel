@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Wish Residence | Agendar Visita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0d0d0d; --card:#161616; --text:#e8e2d6; --muted:#9a9080;
+      --gold:#c9a84c; --gold-light:#e8c97a; --ring:rgba(201,168,76,.25); --border:rgba(201,168,76,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; overflow-x:hidden}
+    body{
+      margin:0;
+      font-family:'Montserrat', ui-sans-serif, system-ui, sans-serif;
+      font-weight:300;
+      background: radial-gradient(ellipse at 60% 20%, rgba(201,168,76,0.07) 0%, transparent 60%),
+                  linear-gradient(180deg, #0d0d0d, #101008);
+      color:var(--text); line-height:1.6;
+    }
+    .wrap{max-width:520px; margin:0 auto; padding:clamp(16px,4vw,24px); min-height:100svh; display:flex; align-items:center}
+    .card{
+      width:100%;
+      background: linear-gradient(180deg, rgba(201,168,76,0.04), rgba(201,168,76,0.01));
+      border:1px solid var(--border); border-radius:12px; padding:clamp(24px,5vw,40px);
+      box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(201,168,76,0.05);
+    }
+
+    .brand{
+      font-family:'Cormorant Garamond', Georgia, serif;
+      font-size:.78rem; font-weight:400; letter-spacing:.25em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:20px; display:flex; align-items:center; gap:10px;
+    }
+    .brand::before{content:''; display:block; width:28px; height:1px; background:var(--gold);}
+    h1{
+      font-family:'Cormorant Garamond', Georgia, serif;
+      margin:0 0 .4rem; font-size:clamp(2rem, 5.5vw, 2.6rem); font-weight:300; line-height:1.15;
+      color:var(--text);
+    }
+    h1 em{color:var(--gold); font-style:italic; font-weight:400;}
+    p.sub{
+      margin:.15rem 0 1.6rem; color:var(--muted);
+      font-size:clamp(.88rem, 3vw, .95rem); font-weight:300;
+    }
+
+    label{display:block; font-weight:500; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:.9rem 0 .35rem}
+    .required{color:var(--gold); margin-left:.2rem}
+
+    input[type="text"], input[type="email"], input[type="tel"]{
+      width:100%; border:1px solid rgba(201,168,76,.15); background:rgba(255,255,255,.03);
+      color:var(--text); border-radius:6px; padding:.85rem 1rem; outline:none;
+      transition:border-color .2s, box-shadow .2s; font-family:inherit;
+      font-size:16px; font-weight:300; min-height:50px;
+    }
+    input:focus{ border-color:var(--gold); box-shadow:0 0 0 3px var(--ring); }
+    input::placeholder{ color:#5a5248 }
+
+    .actions{ display:flex; gap:.8rem; margin-top:1.4rem }
+    .actions .btn{
+      flex:1; display:inline-flex; align-items:center; justify-content:center;
+      gap:.5rem; border:1px solid var(--gold);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light) 100%);
+      color:#0d0d0d; font-family:inherit; font-weight:600; font-size:.78rem;
+      letter-spacing:.15em; text-transform:uppercase;
+      border-radius:6px; padding:1rem 1.2rem; cursor:pointer;
+      box-shadow:0 8px 24px rgba(201,168,76,.2); min-height:52px;
+      transition:transform .06s ease, filter .15s ease;
+    }
+    .btn:hover{ filter:brightness(1.06) }
+    .btn:active{ transform:translateY(1px) }
+    .btn[disabled]{ opacity:.55; cursor:not-allowed }
+
+    .divider{
+      display:flex; align-items:center; gap:10px; margin:1.6rem 0;
+    }
+    .divider::before,.divider::after{
+      content:''; flex:1; height:1px; background:rgba(201,168,76,.1);
+    }
+    .divider span{
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      font-size:.85rem; color:var(--muted); white-space:nowrap;
+    }
+
+    .footnote{ color:var(--muted); font-size:.78rem; margin-top:.9rem; line-height:1.55; font-weight:300; }
+
+    .alert{ display:none; margin:.7rem 0 0; padding:.85rem 1rem; border-radius:6px; font-size:.88rem; }
+    .alert.success{ background:rgba(201,168,76,.1); color:var(--gold-light); border:1px solid rgba(201,168,76,.3) }
+    .alert.error{ background:rgba(239,68,68,.08); color:#f87171; border:1px solid rgba(239,68,68,.25) }
+
+    @media (max-width:360px){ .wrap{padding:12px} .card{padding:18px} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card">
+      <header>
+        <div class="brand">Wish Residence · Jatiúca</div>
+        <h1>Agende sua<br><em>visita exclusiva</em></h1>
+        <p class="sub">Preencha seus dados e entraremos em contato para confirmar o melhor horário para você conhecer o imóvel.</p>
+      </header>
+
+      <form id="lead-form" method="POST" action="https://motionlesswhaleshark-n8n.cloudfy.live/webhook/form" target="webhookFrame" novalidate>
+        <!-- Honeypot contra bots -->
+        <input type="text" name="website_field" id="website_field" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" />
+        <iframe name="webhookFrame" id="webhookFrame" style="display:none"></iframe>
+
+        <div class="field">
+          <label for="nome">Nome completo<span class="required">*</span></label>
+          <input id="nome" name="nome" type="text" placeholder="Ex.: Ana Lima" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="email">E‑mail<span class="required">*</span></label>
+          <input id="email" name="email" type="email" placeholder="voce@email.com" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="whatsapp">WhatsApp<span class="required">*</span></label>
+          <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" placeholder="(82) 9XXXX‑XXXX" autocomplete="tel" required />
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn">Quero Agendar Minha Visita</button>
+        </div>
+
+        <div id="alert-success" class="alert success" role="status" aria-live="polite">✦ Recebemos seu contato! Em breve nossa equipe entrará em contato pelo WhatsApp para confirmar sua visita.</div>
+        <div id="alert-error" class="alert error" role="alert">Não foi possível enviar. Revise os campos e tente novamente.</div>
+
+        <div class="divider"><span>R$ 1.100.000 · 78m² · 2 quartos · Jatiúca</span></div>
+
+        <p class="footnote">Ao enviar, você concorda em receber contato da nossa equipe sobre este imóvel. Sem spam — apenas uma conversa.</p>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // Máscara WhatsApp BR
+    const phone = document.getElementById('whatsapp');
+    phone.addEventListener('input', () => {
+      const digits = phone.value.replace(/\D/g, '').slice(0, 11);
+      let out = digits;
+      if (out.length > 2) out = `(${out.slice(0,2)}) ${out.slice(2)}`;
+      if (out.length > 10) out = `${out.slice(0,10)}-${out.slice(10)}`;
+      phone.value = out;
+    });
+
+    const form      = document.getElementById('lead-form');
+    const success   = document.getElementById('alert-success');
+    const error     = document.getElementById('alert-error');
+    const submitBtn = document.getElementById('submit-btn');
+
+    const show = el => { el.style.display = 'block'; };
+    const hide = el => { el.style.display = 'none'; };
+
+    function basicValidate(){
+      hide(success); hide(error);
+      const nome  = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const whats = document.getElementById('whatsapp').value.replace(/\D/g,'');
+      return nome.length >= 2 && /.+@.+\..+/.test(email) && whats.length >= 10;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (document.getElementById('website_field').value) return;
+      if (!basicValidate()){ show(error); return; }
+
+      submitBtn.disabled = true;
+      const original = submitBtn.textContent;
+      submitBtn.textContent = 'Enviando...';
+
+      const iframe = document.getElementById('webhookFrame');
+      const onLoad = () => {
+        show(success); hide(error); form.reset();
+        submitBtn.disabled = false; submitBtn.textContent = original;
+        iframe.removeEventListener('load', onLoad);
+        success.setAttribute('tabindex','-1');
+        success.focus && success.focus();
+      };
+      iframe.addEventListener('load', onLoad);
+
+      const phoneInput = document.getElementById('whatsapp');
+      const formatted = phoneInput.value;
+      phoneInput.value = formatted.replace(/\D/g,'');
+      form.submit();
+      phoneInput.value = formatted;
+
+      setTimeout(() => {
+        if (submitBtn.disabled){ submitBtn.disabled = false; submitBtn.textContent = original; }
+      }, 6000);
+    });
+  </script>
+</body>
+</html>
