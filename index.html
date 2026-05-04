@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wish Residence | Apartamento de Alto Padrão — Jatiúca, Maceió</title>
-  <meta name="description" content="Apartamento 78,58m² na 1ª quadra da Praia da Jatiúca. Vista definitiva para o mar, 2 quartos, varanda gourmet. R$ 1.100.000." />
+  <meta name="description" content="Apartamento 78,58m² na 1ª quadra da Praia da Jatiúca. Vista definitiva para o mar, 2 quartos, varanda gourmet. R$ 1.000.000." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -988,6 +988,30 @@
     }
     .float-wpp:hover { transform: scale(1.1); }
 
+    /* ─── SHIMMER ANIMADO ─── */
+    @keyframes shimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .hero-title em,
+    .cta-title em,
+    .evocativo-frase em {
+      background: linear-gradient(
+        90deg,
+        #c9a84c 0%,
+        #f5e9c4 30%,
+        #fff8e7 50%,
+        #f5e9c4 70%,
+        #c9a84c 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      font-style: italic;
+    }
+
     /* ─── BENEFÍCIOS EMOCIONAIS ─── */
     .beneficios {
       padding: 90px 8% 70px;
@@ -1103,7 +1127,7 @@
       <div class="hero-price-row">
         <div class="hero-price">
           <span>Valor</span>
-          R$ 1.100.000
+          R$ 1.000.000
         </div>
         <div class="hero-specs">
           <div class="hero-spec">
@@ -1230,7 +1254,7 @@
         </div>
         <div class="sobre-float">
           <small>Preço</small>
-          <strong>R$ 1,1M</strong>
+          <strong>R$ 1,0M</strong>
         </div>
       </div>
     </div>
@@ -1418,7 +1442,7 @@
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
     <div class="cta-buttons">
-      <a href="https://wa.me/5511978290694?text=Olá!%20Tenho%20interesse%20no%20apartamento%20do%20Wish%20Residence%20(78,58m²%20-%20R$1.100.000).%20Gostaria%20de%20mais%20informações." class="btn-primary" target="_blank" rel="noopener">
+      <a href="https://wa.me/5511978290694?text=Olá!%20Tenho%20interesse%20no%20apartamento%20do%20Wish%20Residence%20(78,58m²%20-%20R$1.000.000).%20Gostaria%20de%20mais%20informações." class="btn-primary" target="_blank" rel="noopener">
         💬 Falar no WhatsApp
       </a>
       <a href="lead-wish.html" class="btn-secondary">
@@ -1427,7 +1451,7 @@
     </div>
     <div class="cta-info">
       <div class="cta-info-item">
-        <div class="cta-info-val">R$ 1.100.000</div>
+        <div class="cta-info-val">R$ 1.000.000</div>
         <div class="cta-info-lbl">Valor do imóvel</div>
       </div>
       <div class="cta-info-item">
