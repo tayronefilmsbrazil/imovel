@@ -699,6 +699,8 @@
 
     /* ─── CTA ─── */
     .cta-section {
+      position: relative;
+      overflow: hidden;
       background:
         radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 60%),
         var(--dark2);
@@ -706,6 +708,20 @@
       text-align: center;
       padding: 8rem 4rem;
     }
+    #cta-beams-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .cta-section .section-tag,
+    .cta-section .cta-title,
+    .cta-section .cta-text,
+    .cta-section .cta-buttons,
+    .cta-section .cta-info { position: relative; z-index: 1; }
 
     .cta-section .section-tag { justify-content: center; }
     .cta-section .section-tag::before { display: none; }
@@ -1453,6 +1469,7 @@
 
   <!-- CTA -->
   <section class="cta-section">
+    <canvas id="cta-beams-canvas" aria-hidden="true"></canvas>
     <div class="section-tag">Oportunidade Exclusiva</div>
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
@@ -1592,8 +1609,8 @@
 
   <!-- BEAMS BACKGROUND ANIMATION -->
   <script>
-  (function(){
-    var canvas = document.getElementById('beams-canvas');
+  function initBeams(canvasId) {
+    var canvas = document.getElementById(canvasId);
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
     var beams = [];
@@ -1676,7 +1693,10 @@
     resize();
     window.addEventListener('resize', resize);
     draw();
-  })();
+  }
+
+  initBeams('beams-canvas');
+  initBeams('cta-beams-canvas');
   </script>
 </body>
 </html>
