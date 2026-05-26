@@ -774,7 +774,6 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      mix-blend-mode: screen;
       pointer-events: none;
     }
     .cta-section .section-tag,
@@ -2413,7 +2412,66 @@
   }
 
   initBeams('beams-canvas');
-  initBeams('cta-beams-canvas');
+
+  /* ── MESH GRADIENT — CTA SECTION ── */
+  (function initMesh(canvasId) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var t = 0;
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    function blob(cx, cy, r, r_, g_, b_, alpha) {
+      var gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      gr.addColorStop(0,   'rgba('+r_+','+g_+','+b_+','+alpha+')');
+      gr.addColorStop(0.5, 'rgba('+r_+','+g_+','+b_+','+(alpha*0.4)+')');
+      gr.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.fillStyle = gr;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function animate() {
+      var w = canvas.width, h = canvas.height;
+      t += 0.004;
+
+      /* base dark */
+      ctx.fillStyle = '#0c0a04';
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.globalCompositeOperation = 'screen';
+
+      /* gold blob — centro flutuante */
+      blob(w*(0.45+0.28*Math.sin(t*0.65)),   h*(0.45+0.22*Math.cos(t*0.5)),    w*0.55, 201,168,76,  0.38);
+      /* âmbar canto superior direito */
+      blob(w*(0.85+0.12*Math.cos(t*0.55+1)), h*(0.15+0.18*Math.sin(t*0.4+2)), w*0.42, 180,130,30, 0.28);
+      /* marrom escuro canto inferior esq */
+      blob(w*(0.1+0.18*Math.sin(t*0.5+3)),   h*(0.8+0.15*Math.cos(t*0.7)),    w*0.5,  120, 80, 10, 0.32);
+      /* brilho quente central sutil */
+      blob(w*(0.6+0.35*Math.cos(t*0.35+0.5)),h*(0.55+0.25*Math.sin(t*0.55+1)),w*0.35, 232,200,90, 0.18);
+      /* sombra fria para contraste */
+      blob(w*(0.2+0.2*Math.cos(t*0.45+2)),   h*(0.3+0.2*Math.sin(t*0.6+3)),   w*0.4,  40, 25,  5, 0.25);
+
+      ctx.globalCompositeOperation = 'source-over';
+
+      /* vinheta escura nas bordas */
+      var vg = ctx.createRadialGradient(w/2,h/2, h*0.2, w/2,h/2, Math.max(w,h)*0.75);
+      vg.addColorStop(0,   'rgba(0,0,0,0)');
+      vg.addColorStop(0.6, 'rgba(0,0,0,0.15)');
+      vg.addColorStop(1,   'rgba(0,0,0,0.65)');
+      ctx.fillStyle = vg;
+      ctx.fillRect(0, 0, w, h);
+
+      requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    animate();
+  })('cta-beams-canvas');
   </script>
 </body>
 </html>
