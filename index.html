@@ -2311,14 +2311,24 @@
     }
   });
 
-  // Sticky bar ao 70% de scroll
+  // Sticky bar: aparece ao rolar 70%, some ao rolar para cima ou perto do footer
   var stickyBar = document.getElementById('sticky-cta');
-  var stickyVisible = false;
+  var lastScrollY = window.scrollY;
   window.addEventListener('scroll', function(){
-    var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-    if (pct > 0.7 && !stickyVisible && stickyBar) {
+    var scrollY   = window.scrollY;
+    var maxScroll = document.body.scrollHeight - window.innerHeight;
+    var pct       = scrollY / maxScroll;
+    var footer    = document.querySelector('footer');
+    var footerTop = footer ? footer.getBoundingClientRect().top : window.innerHeight;
+    var nearFooter = footerTop < window.innerHeight + 20; // 20px antes do footer
+    var scrollingUp = scrollY < lastScrollY;
+    lastScrollY = scrollY;
+
+    if (!stickyBar) return;
+    if (pct > 0.7 && !scrollingUp && !nearFooter) {
       stickyBar.style.display = 'flex';
-      stickyVisible = true;
+    } else if (scrollingUp || nearFooter) {
+      stickyBar.style.display = 'none';
     }
   });
   </script>
