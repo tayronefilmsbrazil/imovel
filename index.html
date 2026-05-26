@@ -2265,15 +2265,13 @@
       // TODO: substituir pelo webhook n8n
       var N8N_URL    = 'SEU_WEBHOOK_N8N_AQUI';
 
-      // Enviar para Google Sheets
-      if (GSHEET_URL !== 'https://script.google.com/macros/s/AKfycbzYpfTv3Fl22YkadKzd83WwgJaQj7Iqpx5_KWitdWVZifUllzUfBnZnSECqMJq8sWSA/exec') {
-        fetch(GSHEET_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(payload)
-        }).catch(function(){});
-      }
+      // Enviar para Google Sheets (text/plain + no-cors funciona com Apps Script)
+      fetch(GSHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain'},
+        body: JSON.stringify(payload)
+      }).catch(function(){});
 
       // Enviar para n8n
       if (N8N_URL !== 'SEU_WEBHOOK_N8N_AQUI') {
