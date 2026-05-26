@@ -1054,7 +1054,7 @@
     .float-wpp:hover { transform: scale(1.1); }
 
     /* ─── BEAMS CANVAS ─── */
-    .ig-bg {
+    .silk-canvas {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -1062,32 +1062,6 @@
       z-index: 2;
       pointer-events: none;
       mix-blend-mode: screen;
-    }
-    .ig-light, .ig-dark {
-      position: absolute;
-      inset: 0;
-      transition: opacity 0.5s ease;
-      background-blend-mode: overlay, overlay, difference, difference, difference, normal;
-    }
-    .ig-light {
-      opacity: 1;
-      background:
-        linear-gradient(115deg, rgb(211 255 215), rgb(0 0 0)),
-        radial-gradient(90% 100% at calc(50% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(200 200 200), rgb(22 0 45)),
-        radial-gradient(100% 100% at calc(80% - var(--posX,0)*1px) calc(0% - var(--posY,0)*1px), rgb(250 255 0), rgb(36 0 0)),
-        radial-gradient(150% 210% at calc(100% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(20 175 125), rgb(0 10 255)),
-        radial-gradient(100% 100% at calc(100% - var(--posX,0)*1px) calc(30% - var(--posY,0)*1px), rgb(255 77 0), rgb(0 200 255)),
-        linear-gradient(60deg, rgb(255 0 0), rgb(120 86 255));
-    }
-    .ig-dark {
-      opacity: 0;
-      background:
-        linear-gradient(115deg, rgb(15 30 20), rgb(0 0 0)),
-        radial-gradient(90% 100% at calc(50% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(80 80 100), rgb(10 0 25)),
-        radial-gradient(100% 100% at calc(80% - var(--posX,0)*1px) calc(0% - var(--posY,0)*1px), rgb(100 120 0), rgb(15 0 0)),
-        radial-gradient(150% 210% at calc(100% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(10 80 60), rgb(0 5 120)),
-        radial-gradient(100% 100% at calc(100% - var(--posX,0)*1px) calc(30% - var(--posY,0)*1px), rgb(120 35 0), rgb(0 100 140)),
-        linear-gradient(60deg, rgb(100 0 0), rgb(60 40 150));
     }
     .hero-ornament { z-index: 3; }
     .hero-content  { z-index: 4; position: relative; }
@@ -1413,7 +1387,7 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="ig-bg" id="hero-ig" aria-hidden="true"><div class="ig-light"></div><div class="ig-dark"></div></div>
+    <canvas id="silk-hero" class="silk-canvas" aria-hidden="true"></canvas>
     <div class="hero-ornament"></div>
 
     <div class="hero-content">
@@ -1876,7 +1850,7 @@
   <!-- CTA -->
   <section class="cta-section">
     <div class="hero-bg" style="opacity:0.55;"></div>
-    <div class="ig-bg" id="cta-ig" aria-hidden="true"><div class="ig-light"></div><div class="ig-dark"></div></div>
+    <canvas id="silk-cta" class="silk-canvas" aria-hidden="true"></canvas>
     <div class="section-tag">Oportunidade Exclusiva</div>
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
@@ -2340,43 +2314,92 @@
   });
   </script>
 
-    <!-- INTERACTIVE GRADIENT BACKGROUND -->
+    <!-- SILK BACKGROUND ANIMATION -->
   <script>
-  function initIG(sectionEl, igId) {
-    var host = typeof sectionEl === 'string' ? document.querySelector(sectionEl) : sectionEl;
-    if (!host) return;
-    host.style.setProperty('--posX', '0');
-    host.style.setProperty('--posY', '0');
+  function initSilk(canvasId) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var time = 0;
+    var speed = 0.02;
+    var scale = 2;
+    var noiseIntensity = 0.8;
+    var raf;
 
-    var rafId = null;
-    var pending = null;
-
-    function schedule() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(function() {
-        rafId = null;
-        if (!pending) return;
-        var rect = host.getBoundingClientRect();
-        var px = pending.clientX - rect.left - rect.width / 2;
-        var py = pending.clientY - rect.top - rect.height / 2;
-        host.style.setProperty('--posX', String(px));
-        host.style.setProperty('--posY', String(py));
-        pending = null;
-      });
+    function noise(x, y) {
+      var G = 2.71828;
+      var rx = G * Math.sin(G * x);
+      var ry = G * Math.sin(G * y);
+      return (rx * ry * (1 + x)) % 1;
     }
 
-    host.addEventListener('pointermove', function(e) {
-      pending = e; schedule();
-    }, { passive: true });
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
 
-    host.addEventListener('pointerleave', function() {
-      host.style.setProperty('--posX', '0');
-      host.style.setProperty('--posY', '0');
-    });
+    function animate() {
+      var width  = canvas.width;
+      var height = canvas.height;
+      if (!width || !height) { raf = requestAnimationFrame(animate); return; }
+
+      var imageData = ctx.createImageData(width, height);
+      var data = imageData.data;
+
+      for (var x = 0; x < width; x += 2) {
+        for (var y = 0; y < height; y += 2) {
+          var u = (x / width)  * scale;
+          var v = (y / height) * scale;
+          var tOffset = speed * time;
+          var tex_x = u;
+          var tex_y = v + 0.03 * Math.sin(8.0 * tex_x - tOffset);
+          var pattern = 0.6 + 0.4 * Math.sin(
+            5.0 * (tex_x + tex_y +
+              Math.cos(3.0 * tex_x + 5.0 * tex_y) +
+              0.02 * tOffset) +
+            Math.sin(20.0 * (tex_x + tex_y - 0.1 * tOffset))
+          );
+          var rnd = noise(x, y);
+          var intensity = Math.max(0, pattern - rnd / 15.0 * noiseIntensity);
+
+          /* gold-tinted silk: R=201 G=168 B=76 at max intensity */
+          var r = Math.floor(201 * intensity);
+          var g = Math.floor(168 * intensity);
+          var b = Math.floor(76  * intensity);
+
+          /* fill 2×2 block */
+          for (var dx = 0; dx < 2 && x+dx < width; dx++) {
+            for (var dy = 0; dy < 2 && y+dy < height; dy++) {
+              var idx = ((y+dy) * width + (x+dx)) * 4;
+              data[idx]   = r;
+              data[idx+1] = g;
+              data[idx+2] = b;
+              data[idx+3] = 255;
+            }
+          }
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      /* radial vignette overlay */
+      var ov = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width,height)/2);
+      ov.addColorStop(0, 'rgba(0,0,0,0.05)');
+      ov.addColorStop(1, 'rgba(0,0,0,0.45)');
+      ctx.fillStyle = ov;
+      ctx.fillRect(0, 0, width, height);
+
+      time += 1;
+      raf = requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    animate();
   }
 
-  initIG('.hero');
-  initIG('.cta-section');
+  initSilk('silk-hero');
+  initSilk('silk-cta');
   </script>
 </body>
 </html>
