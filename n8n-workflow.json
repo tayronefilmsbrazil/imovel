@@ -1,0 +1,260 @@
+{
+  "name": "imovelal - Wish Residence - Funil Completo",
+  "nodes": [
+    {
+      "name": "Webhook - Novo Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "path": "wish-residence-lead",
+        "responseMode": "onReceived",
+        "responseData": "{\"status\":\"received\"}"
+      }
+    },
+    {
+      "name": "Telegram - Alerta Vendedor",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        460,
+        200
+      ],
+      "parameters": {
+        "chatId": "SEU_CHAT_ID_TELEGRAM",
+        "text": "🏖 *NOVO LEAD — WISH RESIDENCE*\n\n👤 *Nome:* {{ $json.nome }}\n📱 *WhatsApp:* {{ $json.whatsapp }}\n🎯 *Perfil:* {{ $json.perfil }}\n⏱ *Prazo:* {{ $json.prazo }}\n💰 *Entrada:* {{ $json.entrada }}\n📣 *Canal:* {{ $json.canal }}\n\n⏰ {{ $json.timestamp }}\n\n👆 *Responda em até 5 minutos para maximizar a conversão!*",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      }
+    },
+    {
+      "name": "Wait 5 minutes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        460,
+        400
+      ],
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      }
+    },
+    {
+      "name": "Telegram - Boas-vindas Dia 1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        680,
+        400
+      ],
+      "parameters": {
+        "chatId": "SEU_BOT_CANAL_LEADS",
+        "text": "Olá, {{ $json.nome }}! 👋\n\nSou da equipe *Wish Residence* — o apartamento com vista definitiva para a Praia da Jatiúca.\n\n🌊 *78,58m² · 1ª quadra da Jatiúca · Vista Mar · R$ 1.050.000*\n\nPreparei um material completo sobre o imóvel para você. Posso enviar agora?\n\nResponda *SIM* para receber fotos exclusivas, plantas e condições de pagamento.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      }
+    },
+    {
+      "name": "Wait 2 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        680,
+        550
+      ],
+      "parameters": {
+        "amount": 2,
+        "unit": "days"
+      }
+    },
+    {
+      "name": "IF - Perfil Investidor",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        550
+      ],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.perfil }}",
+              "operation": "contains",
+              "value2": "investir"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Telegram - Dia 2 Investidor",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        450
+      ],
+      "parameters": {
+        "chatId": "SEU_BOT_CANAL_LEADS",
+        "text": "{{ $json.nome }}, os números falam por si 📊\n\n*Wish Residence como investimento:*\n🏠 Valor: R$ 1.050.000\n💸 Aluguel estimado: R$ 3.800–4.200/mês\n📈 Rentabilidade bruta: ~4,8% a.a.\n📈 Valorização m² Jatiúca: 10,5% ao ano\n🎯 *Retorno total estimado: ~15% a.a.*\n\nMercado de Maceió cresceu 21% em 2025. A janela está aberta agora.\n\nQuer uma simulação personalizada?",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      }
+    },
+    {
+      "name": "Telegram - Dia 2 Morador",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        650
+      ],
+      "parameters": {
+        "chatId": "SEU_BOT_CANAL_LEADS",
+        "text": "{{ $json.nome }}, imagina despertar com essa vista todo dia 🌅\n\nO Wish Residence é 100% nascente — sol da manhã, vista definitiva para o mar.\n\n✅ A 100m da Praia da Jatiúca\n✅ Rooftop com piscina e borda infinita\n✅ Gerador full + energia solar\n✅ Concierge 24h · Nunca habitado\n\nGostaria de agendar uma visita exclusiva esta semana?",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      }
+    },
+    {
+      "name": "Wait 3 days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        550
+      ],
+      "parameters": {
+        "amount": 3,
+        "unit": "days"
+      }
+    },
+    {
+      "name": "Telegram - Dia 5 Convite Visita",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        550
+      ],
+      "parameters": {
+        "chatId": "SEU_BOT_CANAL_LEADS",
+        "text": "{{ $json.nome }}, última mensagem 🤝\n\n*Visita exclusiva ao Wish Residence*\n📅 Você escolhe o dia e horário\n🔑 Acesso completo ao apartamento e rooftop\n☕ Sem pressão, sem compromisso\n\nResponda *VISITA* e confirmamos em minutos.\n\nAté logo! 🌊",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Novo Lead": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Alerta Vendedor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait 5 minutes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5 minutes": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Boas-vindas Dia 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Boas-vindas Dia 1": {
+      "main": [
+        [
+          {
+            "node": "Wait 2 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 2 days": {
+      "main": [
+        [
+          {
+            "node": "IF - Perfil Investidor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Perfil Investidor": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Dia 2 Investidor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram - Dia 2 Morador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Dia 2 Investidor": {
+      "main": [
+        [
+          {
+            "node": "Wait 3 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram - Dia 2 Morador": {
+      "main": [
+        [
+          {
+            "node": "Wait 3 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 3 days": {
+      "main": [
+        [
+          {
+            "node": "Telegram - Dia 5 Convite Visita",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
