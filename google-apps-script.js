@@ -6,7 +6,7 @@
 // Copie a URL do deploy e cole em index.html onde está SEU_GOOGLE_APPS_SCRIPT_URL
 // ═══════════════════════════════════════════════════════════════════════════
 
-const SHEET_ID   = 'SEU_GOOGLE_SHEET_ID_AQUI';   // TODO
+const SHEET_ID   = '1egoU6KD84iNh7p014TPBFFr_leCswm1N4PhWTZCNprw';
 const SHEET_NAME = 'Leads Wish Residence';
 const N8N_WEBHOOK_URL = 'SEU_WEBHOOK_N8N_AQUI';  // TODO
 

@@ -2261,12 +2261,12 @@
       };
 
       // TODO: substituir pela URL real do Google Apps Script
-      var GSHEET_URL = 'SEU_GOOGLE_APPS_SCRIPT_URL';
+      var GSHEET_URL = 'https://script.google.com/macros/s/AKfycbzYpfTv3Fl22YkadKzd83WwgJaQj7Iqpx5_KWitdWVZifUllzUfBnZnSECqMJq8sWSA/exec';
       // TODO: substituir pelo webhook n8n
       var N8N_URL    = 'SEU_WEBHOOK_N8N_AQUI';
 
       // Enviar para Google Sheets
-      if (GSHEET_URL !== 'SEU_GOOGLE_APPS_SCRIPT_URL') {
+      if (GSHEET_URL !== 'https://script.google.com/macros/s/AKfycbzYpfTv3Fl22YkadKzd83WwgJaQj7Iqpx5_KWitdWVZifUllzUfBnZnSECqMJq8sWSA/exec') {
         fetch(GSHEET_URL, {
           method: 'POST',
           mode: 'no-cors',
