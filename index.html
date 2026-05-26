@@ -761,10 +761,21 @@
     .cta-section {
       position: relative;
       overflow: hidden;
-      background: var(--dark);
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 60%),
+        var(--dark2);
       border-top: 1px solid rgba(201,168,76,0.2);
       text-align: center;
       padding: 8rem 4rem;
+    }
+    #cta-beams-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      mix-blend-mode: screen;
+      pointer-events: none;
     }
     .cta-section .section-tag,
     .cta-section .cta-title,
@@ -1054,14 +1065,14 @@
     .float-wpp:hover { transform: scale(1.1); }
 
     /* ─── BEAMS CANVAS ─── */
-    .silk-canvas {
+    #beams-canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 2;
-      pointer-events: none;
       mix-blend-mode: screen;
+      pointer-events: none;
     }
     .hero-ornament { z-index: 3; }
     .hero-content  { z-index: 4; position: relative; }
@@ -1387,7 +1398,7 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <canvas id="silk-hero" class="silk-canvas" aria-hidden="true"></canvas>
+    <canvas id="beams-canvas" aria-hidden="true"></canvas>
     <div class="hero-ornament"></div>
 
     <div class="hero-content">
@@ -1849,8 +1860,7 @@
 
   <!-- CTA -->
   <section class="cta-section">
-    <div class="hero-bg" style="opacity:0.55;"></div>
-    <canvas id="silk-cta" class="silk-canvas" aria-hidden="true"></canvas>
+    <canvas id="cta-beams-canvas" aria-hidden="true"></canvas>
     <div class="section-tag">Oportunidade Exclusiva</div>
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
@@ -2314,92 +2324,96 @@
   });
   </script>
 
-    <!-- SILK BACKGROUND ANIMATION -->
+    <!-- BEAMS BACKGROUND ANIMATION -->
   <script>
-  function initSilk(canvasId) {
+  function initBeams(canvasId) {
     var canvas = document.getElementById(canvasId);
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
-    var time = 0;
-    var speed = 0.02;
-    var scale = 2;
-    var noiseIntensity = 0.8;
+    var beams = [];
     var raf;
+    var BEAM_COUNT = 22;
 
-    function noise(x, y) {
-      var G = 2.71828;
-      var rx = G * Math.sin(G * x);
-      var ry = G * Math.sin(G * y);
-      return (rx * ry * (1 + x)) % 1;
+    function createBeam(w, h, index) {
+      var col = index % 3;
+      var spacing = w / 3;
+      return {
+        x: col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5,
+        y: Math.random() * h,
+        width: 60 + Math.random() * 80,
+        length: h * 2.2,
+        angle: -32 + Math.random() * 8,
+        speed: 0.4 + Math.random() * 0.7,
+        opacity: 0.08 + Math.random() * 0.10,
+        hue: 38 + Math.random() * 18,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.018 + Math.random() * 0.022
+      };
+    }
+
+    function resetBeam(b, i, w, h) {
+      var col = i % 3;
+      var spacing = w / 3;
+      b.y = h + 120;
+      b.x = col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
+      b.width = 70 + Math.random() * 90;
+      b.speed = 0.4 + Math.random() * 0.6;
+      b.hue = 38 + (i * 18) / BEAM_COUNT;
+      b.opacity = 0.08 + Math.random() * 0.10;
     }
 
     function resize() {
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      var dpr = window.devicePixelRatio || 1;
+      var w = canvas.offsetWidth;
+      var h = canvas.offsetHeight;
+      canvas.width  = w * dpr;
+      canvas.height = h * dpr;
+      ctx.scale(dpr, dpr);
+      beams = [];
+      for (var i = 0; i < BEAM_COUNT; i++) beams.push(createBeam(w, h, i));
     }
 
-    function animate() {
-      var width  = canvas.width;
-      var height = canvas.height;
-      if (!width || !height) { raf = requestAnimationFrame(animate); return; }
+    function draw() {
+      var w = canvas.offsetWidth;
+      var h = canvas.offsetHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.filter = 'blur(28px)';
 
-      var imageData = ctx.createImageData(width, height);
-      var data = imageData.data;
+      beams.forEach(function(b, i) {
+        b.y -= b.speed;
+        b.pulse += b.pulseSpeed;
+        if (b.y + b.length < -80) resetBeam(b, i, w, h);
 
-      for (var x = 0; x < width; x += 2) {
-        for (var y = 0; y < height; y += 2) {
-          var u = (x / width)  * scale;
-          var v = (y / height) * scale;
-          var tOffset = speed * time;
-          var tex_x = u;
-          var tex_y = v + 0.03 * Math.sin(8.0 * tex_x - tOffset);
-          var pattern = 0.6 + 0.4 * Math.sin(
-            5.0 * (tex_x + tex_y +
-              Math.cos(3.0 * tex_x + 5.0 * tex_y) +
-              0.02 * tOffset) +
-            Math.sin(20.0 * (tex_x + tex_y - 0.1 * tOffset))
-          );
-          var rnd = noise(x, y);
-          var intensity = Math.max(0, pattern - rnd / 15.0 * noiseIntensity);
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        ctx.rotate(b.angle * Math.PI / 180);
 
-          /* gold-tinted silk: R=201 G=168 B=76 at max intensity */
-          var r = Math.floor(201 * intensity);
-          var g = Math.floor(168 * intensity);
-          var b = Math.floor(76  * intensity);
+        var po = b.opacity * (0.8 + Math.sin(b.pulse) * 0.2);
+        var g = ctx.createLinearGradient(0, 0, 0, b.length);
+        g.addColorStop(0,   'hsla('+b.hue+',80%,62%,0)');
+        g.addColorStop(0.1, 'hsla('+b.hue+',80%,62%,'+(po*0.5)+')');
+        g.addColorStop(0.4, 'hsla('+b.hue+',80%,62%,'+po+')');
+        g.addColorStop(0.6, 'hsla('+b.hue+',80%,62%,'+po+')');
+        g.addColorStop(0.9, 'hsla('+b.hue+',80%,62%,'+(po*0.5)+')');
+        g.addColorStop(1,   'hsla('+b.hue+',80%,62%,0)');
 
-          /* fill 2×2 block */
-          for (var dx = 0; dx < 2 && x+dx < width; dx++) {
-            for (var dy = 0; dy < 2 && y+dy < height; dy++) {
-              var idx = ((y+dy) * width + (x+dx)) * 4;
-              data[idx]   = r;
-              data[idx+1] = g;
-              data[idx+2] = b;
-              data[idx+3] = 255;
-            }
-          }
-        }
-      }
+        ctx.fillStyle = g;
+        ctx.fillRect(-b.width / 2, 0, b.width, b.length);
+        ctx.restore();
+      });
 
-      ctx.putImageData(imageData, 0, 0);
-
-      /* radial vignette overlay */
-      var ov = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width,height)/2);
-      ov.addColorStop(0, 'rgba(0,0,0,0.05)');
-      ov.addColorStop(1, 'rgba(0,0,0,0.45)');
-      ctx.fillStyle = ov;
-      ctx.fillRect(0, 0, width, height);
-
-      time += 1;
-      raf = requestAnimationFrame(animate);
+      ctx.restore();
+      raf = requestAnimationFrame(draw);
     }
 
     resize();
     window.addEventListener('resize', resize);
-    animate();
+    draw();
   }
 
-  initSilk('silk-hero');
-  initSilk('silk-cta');
+  initBeams('beams-canvas');
+  initBeams('cta-beams-canvas');
   </script>
 </body>
 </html>
