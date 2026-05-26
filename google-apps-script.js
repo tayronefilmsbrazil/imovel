@@ -8,7 +8,7 @@
 
 const SHEET_ID   = '1egoU6KD84iNh7p014TPBFFr_leCswm1N4PhWTZCNprw';
 const SHEET_NAME = 'Leads Wish Residence';
-const N8N_WEBHOOK_URL = 'SEU_WEBHOOK_N8N_AQUI';  // TODO
+const N8N_WEBHOOK_URL = 'https://motionlesswhaleshark-n8n.cloudfy.live/webhook/wish-residence-lead';
 
 function doPost(e) {
   try {
