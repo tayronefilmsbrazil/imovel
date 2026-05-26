@@ -766,15 +766,6 @@
       text-align: center;
       padding: 8rem 4rem;
     }
-    #cta-beams-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      mix-blend-mode: screen;
-      pointer-events: none;
-    }
     .cta-section .section-tag,
     .cta-section .cta-title,
     .cta-section .cta-text,
@@ -1063,14 +1054,22 @@
     .float-wpp:hover { transform: scale(1.1); }
 
     /* ─── BEAMS CANVAS ─── */
-    #beams-canvas {
+    .ig-bg {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 2;
-      mix-blend-mode: screen;
       pointer-events: none;
+      mix-blend-mode: screen;
+      background:
+        linear-gradient(115deg, rgb(13 10 3), rgb(0 0 0)),
+        radial-gradient(90% 100% at calc(50% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(201 168 76), rgb(10 0 20)),
+        radial-gradient(100% 100% at calc(80% - var(--posX,0)*1px) calc(0% - var(--posY,0)*1px), rgb(160 130 20), rgb(15 5 0)),
+        radial-gradient(150% 210% at calc(100% + var(--posX,0)*1px) calc(0% + var(--posY,0)*1px), rgb(10 60 40), rgb(0 5 80)),
+        radial-gradient(100% 100% at calc(100% - var(--posX,0)*1px) calc(30% - var(--posY,0)*1px), rgb(180 120 10), rgb(0 50 80)),
+        linear-gradient(60deg, rgb(80 50 5), rgb(40 20 100));
+      background-blend-mode: overlay, overlay, difference, difference, difference, normal;
     }
     .hero-ornament { z-index: 3; }
     .hero-content  { z-index: 4; position: relative; }
@@ -1396,7 +1395,7 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <canvas id="beams-canvas" aria-hidden="true"></canvas>
+    <div class="ig-bg" id="hero-ig" aria-hidden="true"></div>
     <div class="hero-ornament"></div>
 
     <div class="hero-content">
@@ -1859,7 +1858,7 @@
   <!-- CTA -->
   <section class="cta-section">
     <div class="hero-bg" style="opacity:0.55;"></div>
-    <canvas id="cta-beams-canvas" aria-hidden="true"></canvas>
+    <div class="ig-bg" id="cta-ig" aria-hidden="true"></div>
     <div class="section-tag">Oportunidade Exclusiva</div>
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
@@ -2323,96 +2322,43 @@
   });
   </script>
 
-    <!-- BEAMS BACKGROUND ANIMATION -->
+    <!-- INTERACTIVE GRADIENT BACKGROUND -->
   <script>
-  function initBeams(canvasId) {
-    var canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var beams = [];
-    var raf;
-    var BEAM_COUNT = 22;
+  function initIG(sectionEl, igId) {
+    var host = typeof sectionEl === 'string' ? document.querySelector(sectionEl) : sectionEl;
+    if (!host) return;
+    host.style.setProperty('--posX', '0');
+    host.style.setProperty('--posY', '0');
 
-    function createBeam(w, h, index) {
-      var col = index % 3;
-      var spacing = w / 3;
-      return {
-        x: col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5,
-        y: Math.random() * h,
-        width: 60 + Math.random() * 80,
-        length: h * 2.2,
-        angle: -32 + Math.random() * 8,
-        speed: 0.4 + Math.random() * 0.7,
-        opacity: 0.08 + Math.random() * 0.10,
-        hue: 38 + Math.random() * 18,   /* gold 38-56 */
-        pulse: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.018 + Math.random() * 0.022
-      };
-    }
+    var rafId = null;
+    var pending = null;
 
-    function resetBeam(b, i, w, h) {
-      var col = i % 3;
-      var spacing = w / 3;
-      b.y = h + 120;
-      b.x = col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
-      b.width = 70 + Math.random() * 90;
-      b.speed = 0.4 + Math.random() * 0.6;
-      b.hue = 38 + (i * 18) / BEAM_COUNT;
-      b.opacity = 0.08 + Math.random() * 0.10;
-    }
-
-    function resize() {
-      var dpr = window.devicePixelRatio || 1;
-      var w = canvas.offsetWidth;
-      var h = canvas.offsetHeight;
-      canvas.width  = w * dpr;
-      canvas.height = h * dpr;
-      ctx.scale(dpr, dpr);
-      beams = [];
-      for (var i = 0; i < BEAM_COUNT; i++) beams.push(createBeam(w, h, i));
-    }
-
-    function draw() {
-      var w = canvas.offsetWidth;
-      var h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.filter = 'blur(28px)';
-
-      beams.forEach(function(b, i) {
-        b.y -= b.speed;
-        b.pulse += b.pulseSpeed;
-        if (b.y + b.length < -80) resetBeam(b, i, w, h);
-
-        ctx.save();
-        ctx.translate(b.x, b.y);
-        ctx.rotate(b.angle * Math.PI / 180);
-
-        var po = b.opacity * (0.8 + Math.sin(b.pulse) * 0.2);
-        var g = ctx.createLinearGradient(0, 0, 0, b.length);
-        g.addColorStop(0,   'hsla('+b.hue+',80%,62%,0)');
-        g.addColorStop(0.1, 'hsla('+b.hue+',80%,62%,'+(po*0.5)+')');
-        g.addColorStop(0.4, 'hsla('+b.hue+',80%,62%,'+po+')');
-        g.addColorStop(0.6, 'hsla('+b.hue+',80%,62%,'+po+')');
-        g.addColorStop(0.9, 'hsla('+b.hue+',80%,62%,'+(po*0.5)+')');
-        g.addColorStop(1,   'hsla('+b.hue+',80%,62%,0)');
-
-        ctx.fillStyle = g;
-        ctx.fillRect(-b.width / 2, 0, b.width, b.length);
-        ctx.restore();
+    function schedule() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(function() {
+        rafId = null;
+        if (!pending) return;
+        var rect = host.getBoundingClientRect();
+        var px = pending.clientX - rect.left - rect.width / 2;
+        var py = pending.clientY - rect.top - rect.height / 2;
+        host.style.setProperty('--posX', String(px));
+        host.style.setProperty('--posY', String(py));
+        pending = null;
       });
-
-      ctx.restore();
-      raf = requestAnimationFrame(draw);
     }
 
-    resize();
-    window.addEventListener('resize', resize);
-    draw();
+    host.addEventListener('pointermove', function(e) {
+      pending = e; schedule();
+    }, { passive: true });
+
+    host.addEventListener('pointerleave', function() {
+      host.style.setProperty('--posX', '0');
+      host.style.setProperty('--posY', '0');
+    });
   }
 
-  initBeams('beams-canvas');
-  initBeams('cta-beams-canvas');
+  initIG('.hero');
+  initIG('.cta-section');
   </script>
 </body>
 </html>
