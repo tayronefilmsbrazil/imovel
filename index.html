@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wish Residence Jatiúca Maceió | Apartamento 78m² Vista Mar | R$ 1.050.000</title>
-  <meta name="description" content="Apartamento novo 78,58m² na 1ª quadra da Praia da Jatiúca, Maceió. Vista definitiva para o mar, 2 quartos, 1 suíte, varanda gourmet, rooftop com piscina. R$ 1.050.000. Visita imediata." />
+  <title>Wish Residence Jatiúca Maceió | Apartamento 78m² Vista Mar | R$ 1.000.000</title>
+  <meta name="description" content="Apartamento novo 78,58m² na 1ª quadra da Praia da Jatiúca, Maceió. Vista definitiva para o mar, 2 quartos, 1 suíte, varanda gourmet, rooftop com piscina. R$ 1.000.000. Visita imediata." />
   <meta name="keywords" content="apartamento Jatiúca Maceió, imóvel vista mar Maceió, apartamento alto padrão Maceió, Wish Residence Maceió, apartamento 1ª quadra Jatiúca, investimento imobiliário Maceió, apartamento nascente Maceió" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://imovelal.com.br" />
@@ -12,31 +12,31 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://imovelal.com.br" />
   <meta property="og:title" content="Wish Residence — Apartamento Vista Mar na Jatiúca, Maceió" />
-  <meta property="og:description" content="78,58m² na 1ª quadra da Praia da Jatiúca. Vista definitiva para o mar, rooftop com piscina, pronto para morar. R$ 1.050.000." />
+  <meta property="og:description" content="78,58m² na 1ª quadra da Praia da Jatiúca. Vista definitiva para o mar, rooftop com piscina, pronto para morar. R$ 1.000.000." />
   <meta property="og:image" content="https://imovelal.com.br/og-image.jpg" /><!-- TODO: substituir URL_OG_IMAGE_1200x630 -->
   <meta property="og:locale" content="pt_BR" />
   <meta property="og:site_name" content="Imóvel AL" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Wish Residence — Vista Mar na Jatiúca, Maceió" />
-  <meta name="twitter:description" content="Apartamento 78m² · 1ª quadra da Jatiúca · R$ 1.050.000" />
+  <meta name="twitter:title" content="Wish Residence Jatiúca Maceió | Apartamento 78m² Vista Mar | R$ 1.000.000" />
+  <meta name="twitter:description" content="Apartamento 78m² vista mar na 1ª quadra da Jatiúca. R$ 1M. Visite agora." />
   <meta name="twitter:image" content="https://imovelal.com.br/og-image.jpg" /><!-- TODO: substituir URL_OG_IMAGE -->
   <!-- Schema.org RealEstateListing -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
-    "name": "Wish Residence — Apartamento Alto Padrão Jatiúca Maceió",
-    "description": "Apartamento 78,58m² na 1ª quadra da Praia da Jatiúca, Maceió. Vista definitiva para o mar, 2 quartos, 1 suíte, varanda gourmet, rooftop com piscina. R$ 1.050.000.",
+    "name": "Wish Residence — Apartamento 78m² Vista Mar Jatiúca",
+    "description": "Apartamento 78,58m², 2 quartos (1 suíte), varanda gourmet, rooftop com piscina. Vista definitiva para o mar na 1ª quadra da Jatiúca, Maceió.",
     "url": "https://imovelal.com.br",
     "image": "https://imovelal.com.br/og-image.jpg",
     "datePosted": "2026-01-01",
     "validThrough": "2026-12-31",
     "offers": {
       "@type": "Offer",
-      "price": "1050000",
+      "price": "1000000",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/LimitedAvailability"
     },
     "address": {
       "@type": "PostalAddress",
@@ -1370,6 +1370,24 @@
       .form-row { grid-template-columns: 1fr; }
       .dep-grid { grid-template-columns: 1fr; }
     }
+
+    /* ─── BADGE ESCASSEZ ─── */
+    .badge-escassez {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(220,38,38,0.12); border: 1px solid rgba(220,38,38,0.3);
+      color: #fca5a5; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.05em;
+      padding: 5px 12px; border-radius: 20px; margin-bottom: 12px;
+      animation: pulse-red 2s ease-in-out infinite;
+    }
+    @keyframes pulse-red {
+      0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.3); }
+      50% { box-shadow: 0 0 0 6px rgba(220,38,38,0); }
+    }
+
+    /* ─── TICKER MOBILE ─── */
+    .ticker-wrap { overflow: hidden; }
+    .ticker-track { white-space: nowrap; }
+    @media (max-width: 600px) { .ticker-track { font-size: 0.75rem; } }
   </style>
 </head>
 <body>
@@ -1388,18 +1406,19 @@
 
     <div class="hero-content">
       <div class="hero-badge">Jatiúca · Maceió · Alagoas</div>
+      <div class="badge-escassez">🔴 Última unidade disponível neste andar</div>
       <h1 class="hero-title">
         Onde o <em>desejo</em><br>encontra o mar
       </h1>
       <div class="interesse-badge">
         <span class="pulse-dot"></span>
-        <span id="contador-interesse">23 pessoas</span> demonstraram interesse nas últimas 24h
+        <span id="interest-count">23</span> pessoas demonstraram interesse nas últimas 24h
       </div>
       <p class="hero-subtitle">Wish Residence — Apartamento de Alto Padrão · V2 Construções</p>
       <div class="hero-price-row">
         <div class="hero-price">
           <span>Valor</span>
-          R$ 1.050.000
+          R$ 1.000.000
         </div>
         <div class="hero-specs">
           <div class="hero-spec">
@@ -1526,7 +1545,7 @@
         </div>
         <div class="sobre-float">
           <small>Preço</small>
-          <strong>R$ 1,05M</strong>
+          <strong>R$ 1M</strong>
         </div>
       </div>
     </div>
@@ -1847,10 +1866,11 @@
   <section class="cta-section">
     <canvas id="cta-beams-canvas" aria-hidden="true"></canvas>
     <div class="section-tag">Oportunidade Exclusiva</div>
+    <div class="badge-escassez">🔴 Última unidade disponível neste andar</div>
     <h2 class="cta-title">Realize seu <em>desejo</em><br>de viver bem</h2>
     <p class="cta-text">Apartamento disponível para visitação imediata</p>
     <div class="cta-buttons">
-      <a href="https://wa.me/5582999723040?text=Olá!%20Tenho%20interesse%20no%20apartamento%20do%20Wish%20Residence%20(78,58m²%20-%20R$1.050.000).%20Gostaria%20de%20mais%20informações." class="btn-primary" target="_blank" rel="noopener">
+      <a href="https://wa.me/5582999723040?text=Olá!%20Tenho%20interesse%20no%20apartamento%20do%20Wish%20Residence%20(78,58m²%20-%20R$1.000.000).%20Gostaria%20de%20mais%20informações." class="btn-primary" target="_blank" rel="noopener">
         💬 Falar no WhatsApp
       </a>
       <a href="#" class="btn-secondary" onclick="openModal('cta'); return false;">
@@ -1859,7 +1879,7 @@
     </div>
     <div class="cta-info">
       <div class="cta-info-item">
-        <div class="cta-info-val">R$ 1.050.000</div>
+        <div class="cta-info-val">R$ 1.000.000</div>
         <div class="cta-info-lbl">Valor do imóvel</div>
       </div>
       <div class="cta-info-item">
@@ -1906,6 +1926,10 @@
         <div class="form-field">
           <label for="fq-wpp">WhatsApp *</label>
           <input type="tel" id="fq-wpp" name="whatsapp" inputmode="numeric" placeholder="(82) 99999-9999" required />
+        </div>
+        <div class="form-field">
+          <label for="f-email">E-mail <span style="color:var(--muted);font-weight:300">(opcional)</span></label>
+          <input type="email" id="f-email" name="email" placeholder="seu@email.com" class="form-input" autocomplete="email" />
         </div>
         <div class="form-field">
           <label>Seu perfil *</label>
@@ -2060,18 +2084,34 @@
   <script>
   // ── Módulo 3.1: Contador de interesse ──────────────────────────────────
   (function(){
-    function getContador() {
-      var hora = new Date().getHours();
-      var base = 18;
-      var variacao = Math.floor(Math.sin(hora / 3) * 8 + 8);
-      return base + variacao;
+    var k = 'wishInterestCount';
+    var n = sessionStorage.getItem(k);
+    if (!n) { n = 20 + Math.floor(Math.random() * 12); sessionStorage.setItem(k, n); }
+    var el = document.getElementById('interest-count');
+    if (!el) {
+      // fallback: atualiza o elemento legado também
+      var elLegado = document.getElementById('contador-interesse');
+      if (elLegado) {
+        var hora = new Date().getHours();
+        elLegado.textContent = (parseInt(n)) + ' pessoas';
+      }
+      return;
     }
-    var el = document.getElementById('contador-interesse');
-    if (el) el.textContent = getContador() + ' pessoas';
+    var target = parseInt(n), current = 0;
+    var obs = new IntersectionObserver(function(entries){
+      if (!entries[0].isIntersecting) return;
+      var timer = setInterval(function(){
+        current += Math.ceil((target - current) / 6);
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = current;
+      }, 80);
+      obs.disconnect();
+    });
+    obs.observe(el);
   })();
 
   // ── Módulo 2: Calculadora ROI ──────────────────────────────────────────
-  var PRECO = 1050000;
+  var PRECO = 1000000;
   var TAXA_AA = 10.5;
   var N_MESES = 360;
 
@@ -2084,18 +2124,21 @@
     return (pv / n) + pv * i;
   }
   function fmtBRL(v) {
-    return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+    return 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   }
 
   function updateFinanciamento() {
     var slider = document.getElementById('slider-entrada');
     if (!slider) return;
     var pct = parseInt(slider.value);
+    var pv = PRECO * (1 - pct / 100);
     var entrada = PRECO * pct / 100;
-    var financiado = PRECO - entrada;
-    var price = calcPRICE(financiado, TAXA_AA, N_MESES);
-    var sac = calcSAC_primeira(financiado, TAXA_AA, N_MESES);
-    var renda = price * 3;
+    var financiado = pv;
+    var i = 10.5 / 100 / 12;
+    var n = 360;
+    var price = pv > 0 ? pv * (i * Math.pow(1+i,n)) / (Math.pow(1+i,n) - 1) : 0;
+    var sac = pv > 0 ? (pv / n) + pv * i : 0;
+    var renda = price / 0.30;
 
     document.getElementById('pct-entrada').textContent = pct + '%';
     document.getElementById('val-entrada').textContent = fmtBRL(entrada);
@@ -2236,7 +2279,8 @@
         nome: nome, whatsapp: wpp, perfil: perfil,
         prazo: prazo, entrada: entrada, canal: canal,
         userAgent: navigator.userAgent,
-        imovel: 'Wish Residence', preco: 'R$ 1.050.000'
+        imovel: 'Wish Residence', preco: 'R$ 1.000.000',
+        email: document.getElementById('f-email')?.value || ''
       };
 
       // TODO: substituir pela URL real do Google Apps Script
