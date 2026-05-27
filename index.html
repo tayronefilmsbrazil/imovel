@@ -2291,9 +2291,10 @@
       var payload = {
         nome: nome, whatsapp: wpp, perfil: perfil,
         prazo: prazo, entrada: entrada, canal: canal,
+        email: document.getElementById('f-email')?.value || '',
         userAgent: navigator.userAgent,
         imovel: 'Wish Residence', preco: 'R$ 1.000.000',
-        email: document.getElementById('f-email')?.value || ''
+        timestamp: new Date().toLocaleString('pt-BR')
       };
 
       // TODO: substituir pela URL real do Google Apps Script

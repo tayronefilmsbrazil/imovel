@@ -3,7 +3,6 @@
 // Cole este código em: script.google.com → Novo projeto
 // Depois: Implantar → Nova implantação → Aplicativo da Web
 //   Execute como: eu mesmo | Quem acessa: Qualquer pessoa
-// Copie a URL do deploy e cole em index.html onde está SEU_GOOGLE_APPS_SCRIPT_URL
 // ═══════════════════════════════════════════════════════════════════════════
 
 const SHEET_ID   = '1egoU6KD84iNh7p014TPBFFr_leCswm1N4PhWTZCNprw';
@@ -19,8 +18,8 @@ function doPost(e) {
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
-        'Data/Hora','Nome','WhatsApp','Perfil',
-        'Prazo','Entrada','Canal','IP','User Agent','Imóvel','Preço'
+        'Data/Hora','Nome','WhatsApp','E-mail','Perfil',
+        'Prazo','Entrada','Canal','User Agent','Imóvel','Preço'
       ]);
       sheet.getRange(1,1,1,11).setFontWeight('bold');
     }
@@ -29,14 +28,14 @@ function doPost(e) {
       new Date().toLocaleString('pt-BR'),
       data.nome        || '',
       data.whatsapp    || '',
+      data.email       || '',
       data.perfil      || '',
       data.prazo       || '',
       data.entrada     || '',
       data.canal       || '',
-      data.ip          || '',
       data.userAgent   || '',
       data.imovel      || 'Wish Residence',
-      data.preco       || 'R$ 1.050.000'
+      data.preco       || 'R$ 1.000.000'
     ]);
 
     // Disparar n8n webhook
@@ -46,9 +45,9 @@ function doPost(e) {
         contentType: 'application/json',
         payload: JSON.stringify({
           ...data,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toLocaleString('pt-BR'),
           imovel: 'Wish Residence',
-          preco: 'R$ 1.050.000'
+          preco: 'R$ 1.000.000'
         })
       });
     }
