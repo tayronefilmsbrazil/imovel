@@ -1570,14 +1570,14 @@
   // Para local:   src = caminho a partir da raiz (ex: '/videos/wish-vista.mp4')
   var VIDEOS_CONFIG = [
     {
-      tipo: 'youtube',       // ← mude para 'local' quando tiver o MP4
-      src: 'ID_YOUTUBE_1',   // ← substitua pelo ID do YouTube (ou caminho do MP4)
-      poster: '/videos/wish-vista-poster.jpg',
+      tipo: 'local',
+      src: '/videos/wish-vista.mp4',
+      poster: '/videos/wish-vista-poster.jpg', // opcional: crie uma capa .jpg para o 1º frame
       titulo: 'Vista do apartamento'
     },
     {
-      tipo: 'youtube',       // ← mude para 'local' quando tiver o MP4
-      src: 'ID_YOUTUBE_2',   // ← substitua pelo ID do YouTube (ou caminho do MP4)
+      tipo: 'youtube',       // ← substitua pelo ID do YouTube quando tiver o 2º vídeo
+      src: 'ID_YOUTUBE_2',
       poster: '/videos/wish-tour-poster.jpg',
       titulo: 'Tour pelo imóvel'
     }
